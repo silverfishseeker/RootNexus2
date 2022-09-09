@@ -7,11 +7,9 @@ public class KeysMove : MonoBehaviour
     public float startx, starty;
     public float fuerza;
     public float fuerzaSalto;
-    //public float rozamientoEscalada;
     public float rozamientoSuelo;
     public float rozamientoAire;
 
-    private Rigidbody2D rb;
     public LayerMask groundlayer;
     // Representa si está tocando "groundlayer" (en cualquier dirección)
     public bool onGround;
@@ -20,13 +18,15 @@ public class KeysMove : MonoBehaviour
     public bool isGrabingWall;
 
     private float radius;
+    private Rigidbody2D rb;
+    private SpriteRenderer sr;
     private float gForce;
 
 
     void Start() {
         transform.position = new Vector3(startx, starty, 0);
         radius = gameObject.GetComponent<CircleCollider2D>().radius;
-
+        sr = gameObject.GetComponent<SpriteRenderer>();
         rb = gameObject.GetComponent<Rigidbody2D>();
         gForce = rb.gravityScale;        
     }
@@ -48,11 +48,17 @@ public class KeysMove : MonoBehaviour
         if (Input.GetKey("space") & (onRightWall | onLeftWall)) {
             isGrabingWall = true;
             rb.gravityScale = 0;
-            //rb.drag = rozamientoEscalada;
             if (Input.GetKey("w"))
                 stepForce += new Vector2(0, timeTorce);
             if (Input.GetKey("s"))
                 stepForce += new Vector2(0, -timeTorce);
+
+            // Fuerza hacia la pared para que no nos despeguemos de ella
+            if (onRightWall)
+                stepForce += new Vector2( 0.5f * timeTorce, 0);
+            if (onLeftWall)
+                stepForce += new Vector2(-0.5f * timeTorce, 0);
+
         } else if (Input.GetKeyUp("space")){
             isGrabingWall = false;
             if (onGround) {
