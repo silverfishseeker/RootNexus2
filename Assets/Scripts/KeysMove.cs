@@ -38,17 +38,14 @@ public class KeysMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rb.gravityScale = gForce;
-
         onLeftWall  = Physics2D.OverlapCircle(new Vector2(transform.position.x-radius, transform.position.y-0.8f*radius), 0.05f, groundlayer);
         onRightWall = Physics2D.OverlapCircle(new Vector2(transform.position.x+radius, transform.position.y-0.8f*radius), 0.05f, groundlayer);
         
         Vector2 stepForce = new Vector2(0,0);
         
-        //if (Input.GetKey("space") & (onRightWall | onLeftWall)) {
-        //if ((Input.GetKey("w") | Input.GetKey("s")) & (onRightWall | onLeftWall)) {
-        if (((Input.GetKey("w") | Input.GetKey("s")) & (onRightWall | onLeftWall)) | (Input.GetKey("d")&onRightWall) | (Input.GetKey("a")&onLeftWall) ){
+        if ((Input.GetKey("d")&onRightWall) | (Input.GetKey("a")&onLeftWall)) {
             isGrabingWall = true;
+            // Apagamos la grabedad para poder quedarnos quietos en una pared
             rb.gravityScale = 0;
             if (Input.GetKey("w"))
                 stepForce += new Vector2(0, timeTorce);
@@ -61,13 +58,14 @@ public class KeysMove : MonoBehaviour
             if (onLeftWall)
                 stepForce += new Vector2(-0.5f * timeTorce, 0);
 
-        } else if (Input.GetKeyUp("space")){
-            isGrabingWall = false;
-            if (onGround) {
-                stepForce += new Vector2(0, fuerzaSalto);
-            }
         } else {
             isGrabingWall = false;
+            rb.gravityScale = gForce;
+        }
+
+
+        if (Input.GetKeyUp("space") & onGround){
+            stepForce += new Vector2(0, fuerzaSalto);
         }
 
         if (Input.GetKey("a")) {
