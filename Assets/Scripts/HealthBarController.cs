@@ -7,40 +7,38 @@ public class HealthBarController : MonoBehaviour
 
     public float inicialWidth;
     public float max;
-    public float current;
+
+    private float curr;
+    public float current { get { return curr; } }
 
     private RectTransform rt;
 
     void Start()
     {
         rt = gameObject.GetComponent<RectTransform>();
-        current = max;
+        curr = max;
     }
 
     private bool UpdateBar(){
-        if (current > max)
-            current = max;
-        float newWidth = current / max * inicialWidth;
+        if (curr > max)
+            curr = max;
+        float newWidth = curr / max * inicialWidth;
         rt.sizeDelta = new Vector2 (newWidth, rt.sizeDelta.y);
-        return current >= 0;
+        return curr >= 0;
     }
 
-    /// <summary>
-    /// Adds value to current
-    /// </summary>
-    /// <returns> true if result above 0, false otherwise </returns>
-    public bool Add(float value) {
-        current += value;
+    public bool Set(float value) {
+        curr = value;
         return UpdateBar();
     }
 
+    public bool Add(float value) {
+        curr += value;
+        return UpdateBar();
+    }
 
-    /// <summary>
-    /// Multiplies current by value
-    /// </summary>
-    /// <returns> true if result above 0, false otherwise </returns>
     public bool Mult(float value) {
-        current *= value;
+        curr *= value;
         return UpdateBar();
     }
 
@@ -48,7 +46,7 @@ public class HealthBarController : MonoBehaviour
     {
         // Testing bar
         if (Input.GetKeyUp("u")) {
-            current = max;
+            curr = max;
             UpdateBar();
         }
         if (Input.GetKeyUp("i")) {

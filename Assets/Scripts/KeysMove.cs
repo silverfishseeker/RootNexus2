@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class KeysMove : MonoBehaviour
 {
+    public GameObject healthBar;
+
     public float startx, starty;
     public float fuerza;
     public float fuerzaSalto;
@@ -21,6 +23,7 @@ public class KeysMove : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private float gForce;
+    private HealthBarController health;
 
 
     void Start() {
@@ -28,7 +31,8 @@ public class KeysMove : MonoBehaviour
         radius = gameObject.GetComponent<CircleCollider2D>().radius;
         sr = gameObject.GetComponent<SpriteRenderer>();
         rb = gameObject.GetComponent<Rigidbody2D>();
-        gForce = rb.gravityScale;        
+        gForce = rb.gravityScale;
+        health  = healthBar.GetComponent<HealthBarController>();
     }
     
     private float timeTorce {
@@ -57,6 +61,8 @@ public class KeysMove : MonoBehaviour
                 stepForce += new Vector2( 0.5f * timeTorce, 0);
             if (onLeftWall)
                 stepForce += new Vector2(-0.5f * timeTorce, 0);
+            
+            health.Add(-0.01f);
 
         } else {
             isGrabingWall = false;
@@ -66,6 +72,7 @@ public class KeysMove : MonoBehaviour
 
         if (Input.GetKeyUp("space") & onGround){
             stepForce += new Vector2(0, fuerzaSalto);
+            health.Add(-10f);
         }
 
         if (Input.GetKey("a")) {
