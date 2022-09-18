@@ -5,13 +5,13 @@ using UnityEngine;
 public class HealthBarController : MonoBehaviour
 {
 
-    public float inicialWidth;
+    private float inicialWidth;
     public float max;
 
     private float curr;
     public float current { get { return curr; } }
 
-    public RectTransform rt;
+    private RectTransform rt;
 
     void Start()
     {
