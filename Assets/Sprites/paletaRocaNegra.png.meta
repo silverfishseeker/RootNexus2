@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 42571a6e8afa7884298b084d04bd03fa
+guid: 3cf9f9e051d761848a3db434a0c3b15c
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -119,8 +119,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 040c619a50a254b408382e66a14e8969
-      internalID: -500618473
+      spriteID: 24c79b7da4c45424f85ce4ea94ef0713
+      internalID: 338160666
       vertices: []
       indices: 
       edges: []
@@ -140,8 +140,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1c982c3c0fb6fb642ab6caa68553b501
-      internalID: -911638105
+      spriteID: 5d51213f7cfa21d4bba19729f966ecb3
+      internalID: 1870819838
       vertices: []
       indices: 
       edges: []
@@ -161,8 +161,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f0ae716423b98df46831cd34420631f1
-      internalID: -649464869
+      spriteID: e994c15c14da7ab49b0c36ad2d1a381f
+      internalID: 404509160
       vertices: []
       indices: 
       edges: []
@@ -182,8 +182,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 113b3946379577745bbd4f7dbf63e47f
-      internalID: 852431612
+      spriteID: e2a81299874ef0c4692aa1ec9f388f9f
+      internalID: -274714567
       vertices: []
       indices: 
       edges: []
@@ -203,8 +203,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 82613bb32192f5442b6d12aa6a721c00
-      internalID: -1189807674
+      spriteID: 8426a5aa132c3b643a2f828b6647ca02
+      internalID: -142537016
       vertices: []
       indices: 
       edges: []
@@ -224,8 +224,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a84d0c2cdec09694e8685680c2f02774
-      internalID: -231084827
+      spriteID: 921b51cf5e0b4e54bbb20cd42c061b85
+      internalID: 673147853
       vertices: []
       indices: 
       edges: []
@@ -245,8 +245,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 005d7760eb654994997232f9355231e1
-      internalID: 452881120
+      spriteID: fe13cab87c1c29c4cbb322babd2e7307
+      internalID: -20896685
       vertices: []
       indices: 
       edges: []
@@ -266,8 +266,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 955dccf84a958034897295f00df8e2fc
-      internalID: -99419679
+      spriteID: b3db535562c8ba9468563f9abf67d691
+      internalID: -1502703396
       vertices: []
       indices: 
       edges: []
@@ -287,8 +287,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 587254c9af1c522439280c9d99acda00
-      internalID: -1383924507
+      spriteID: e5d67680d53104f438d2d76d6aa8262f
+      internalID: 2018932618
       vertices: []
       indices: 
       edges: []
@@ -308,8 +308,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7f14bc29982c40140b9ff8fbc3d699d0
-      internalID: -704716258
+      spriteID: 4b5ae0da612296a4ea98fa28f6deb7d9
+      internalID: -264898373
       vertices: []
       indices: 
       edges: []
@@ -325,16 +325,16 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      paletaRocaNegra_9: -704716258
-      paletaRocaNegra_7: -99419679
-      paletaRocaNegra_0: -500618473
-      paletaRocaNegra_4: -1189807674
-      paletaRocaNegra_5: -231084827
-      paletaRocaNegra_6: 452881120
-      paletaRocaNegra_8: -1383924507
-      paletaRocaNegra_3: 852431612
-      paletaRocaNegra_2: -649464869
-      paletaRocaNegra_1: -911638105
+      paletaRocaNegra_9: -264898373
+      paletaRocaNegra_7: -1502703396
+      paletaRocaNegra_0: 338160666
+      paletaRocaNegra_4: -142537016
+      paletaRocaNegra_5: 673147853
+      paletaRocaNegra_6: -20896685
+      paletaRocaNegra_8: 2018932618
+      paletaRocaNegra_3: -274714567
+      paletaRocaNegra_2: 404509160
+      paletaRocaNegra_1: 1870819838
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
