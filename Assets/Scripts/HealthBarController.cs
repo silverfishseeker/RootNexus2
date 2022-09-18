@@ -11,19 +11,20 @@ public class HealthBarController : MonoBehaviour
     private float curr;
     public float current { get { return curr; } }
 
-    private RectTransform rt;
+    public RectTransform rt;
 
     void Start()
     {
         rt = gameObject.GetComponent<RectTransform>();
         curr = max;
+        inicialWidth = rt.localScale.x;
     }
 
     private bool UpdateBar(){
         if (curr > max)
             curr = max;
         float newWidth = curr / max * inicialWidth;
-        rt.sizeDelta = new Vector2 (newWidth, rt.sizeDelta.y);
+        rt.localScale = new Vector3(newWidth, rt.localScale.y, rt.localScale.z);
         return curr >= 0;
     }
 
