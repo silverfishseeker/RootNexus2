@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,24 +10,59 @@ public class DialogueDisplayer : MonoBehaviour
     public GameObject textTMP;
 
 	public string speakingsPath;
+    public int linesPerBox;
+    public int charsPerLine;
 
     private TextMeshProUGUI tmp;
     private string text{
         get{return tmp.text;}
         set{tmp.text = value;}
     }
-    void Start()
-    {
-        tmp = textTMP.GetComponent<TextMeshProUGUI>();
-        Debug.Log(text);
-        string path = "Assets/UI/Dialogue/Speakings/Example.txt";
-        //Read the text from directly from the test.txt file
-        StreamReader reader = new StreamReader(path); 
-        text = reader.ReadToEnd();
+    private string current;
+    private List<string> boxes;
+    private int next = 0;
+
+    IEnumerator Wait(int time){
+        yield return new WaitForSeconds(time);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    void Start() {
+        tmp = textTMP.GetComponent<TextMeshProUGUI>();
+        current = null;
+
+        Display("ralph");
+        //StartCoroutine(Wait(2));
+        // Wait(2);
+        Display("ralph");
+        // Wait(2);
+        // Display("ralph");
+        // Wait(2);
+    }
+
+    bool Display(string fileName) {
+        if (fileName != current)
+            using(StreamReader reader = new StreamReader(speakingsPath + fileName + ".txt")) {
+                boxes = new List<string>();
+                string box = "";
+                while (!reader.EndOfStream) {
+                    string line = reader.ReadLine();
+                    if (line == "/") {
+                        boxes.Add(box);
+                        box = "";
+                    } else {
+                        box+=line+"\n";
+                    }
+                }
+                current = fileName;
+                next = 0;
+                foreach (string s in boxes)
+                    Debug.Log(s);
+            }
+        try {
+            text = boxes[next++];
+            return true;
+        } catch (ArgumentOutOfRangeException) {
+            return false;
+        }
     }
 }

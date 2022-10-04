@@ -7,10 +7,18 @@ public class PlayerMovement : MonoBehaviour
     public GameObject healthBar;
 
     public float startx, starty;
-    public float fuerza;
+    private float fuerza;
+    public float fuerzaAndar;
     public float fuerzaSalto;
+    public float fuerzaCarrera;
     public float rozamientoSuelo;
     public float rozamientoAire;
+
+    private float costeHorizontal;
+    public float costeAndarFps;
+    public float costeCorrerFps;
+    public float costeSalto;
+    public float costeParedFps;
 
     public LayerMask groundlayer;
     // Representa si está tocando "groundlayer" (en cualquier dirección)
@@ -33,6 +41,8 @@ public class PlayerMovement : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody2D>();
         gForce = rb.gravityScale;
         health  = healthBar.GetComponent<HealthBarController>();
+        fuerza = fuerzaAndar;
+        costeHorizontal = costeAndarFps;
     }
     
     private float timeTorce {
@@ -62,24 +72,32 @@ public class PlayerMovement : MonoBehaviour
             if (onLeftWall)
                 stepForce += new Vector2(-0.5f * timeTorce, 0);
             
-            health.Add(-0.01f);
+            health.Add(-costeParedFps);
 
         } else {
             isGrabingWall = false;
             rb.gravityScale = gForce;
         }
 
-
-        if (Input.GetKeyUp("space") & onGround){
-            stepForce += new Vector2(0, fuerzaSalto);
-            health.Add(-10f);
+        if (Input.GetKey("space") & onGround) {
+            fuerza = fuerzaCarrera;
+            costeHorizontal = costeCorrerFps;
+        } else if (Input.GetKeyUp("space")){
+            fuerza = fuerzaAndar;
+            costeHorizontal = costeAndarFps;
+            if (onGround) {
+                stepForce += new Vector2(0, fuerzaSalto);
+                health.Add(-costeSalto);
+            }
         }
 
         if (Input.GetKey("a")) {
             stepForce += new Vector2(-timeTorce, 0);
+            health.Add(-costeHorizontal);
         }
         if (Input.GetKey("d")) {
             stepForce += new Vector2(timeTorce, 0);
+            health.Add(-costeHorizontal);
         }
 
         rb.AddForce(stepForce);
