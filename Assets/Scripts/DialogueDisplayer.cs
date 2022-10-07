@@ -19,50 +19,58 @@ public class DialogueDisplayer : MonoBehaviour
         set{tmp.text = value;}
     }
     private string current;
-    private List<string> boxes;
+    private List<string> boxes = new List<string>();
     private int next = 0;
-
-    IEnumerator Wait(int time){
-        yield return new WaitForSeconds(time);
-    }
 
     void Start() {
         tmp = textTMP.GetComponent<TextMeshProUGUI>();
         current = null;
 
-        Display("ralph");
+        Load("ralph");
         //StartCoroutine(Wait(2));
         // Wait(2);
-        Display("ralph");
         // Wait(2);
         // Display("ralph");
         // Wait(2);
     }
+    
+    void Update() {
+        if (Input.GetKeyUp("g"))
+            Next();
+    }
 
-    bool Display(string fileName) {
-        if (fileName != current)
-            using(StreamReader reader = new StreamReader(speakingsPath + fileName + ".txt")) {
-                boxes = new List<string>();
-                string box = "";
-                while (!reader.EndOfStream) {
-                    string line = reader.ReadLine();
-                    if (line == "/") {
-                        boxes.Add(box);
-                        box = "";
-                    } else {
-                        box+=line+"\n";
-                    }
+    public void Load(string fileName) {
+        using(StreamReader reader = new StreamReader(speakingsPath + fileName + ".txt")) {
+            boxes = new List<string>();
+            string box = "";
+            while (!reader.EndOfStream) {
+                string line = reader.ReadLine();
+                if (line == "/") {
+                    boxes.Add(box);
+                    box = "";
+                } else {
+                    box+=line+"\n";
                 }
-                current = fileName;
-                next = 0;
-                foreach (string s in boxes)
-                    Debug.Log(s);
             }
-        try {
-            text = boxes[next++];
-            return true;
-        } catch (ArgumentOutOfRangeException) {
-            return false;
+            current = fileName;
+            next = 0;
+            foreach (string s in boxes)
+                Debug.Log(s);
         }
     }
+
+    public bool Next() {
+        if (next > boxes.Count)
+            return false;
+        if (next == boxes.Count)
+            text = "";
+        else
+            text = boxes[next++];
+        return true;
+    }
+
+    public void Clear() {
+            text = "";
+    }
+
 }
