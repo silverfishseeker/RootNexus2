@@ -25,13 +25,9 @@ public class DialogueDisplayer : MonoBehaviour
     void Start() {
         tmp = textTMP.GetComponent<TextMeshProUGUI>();
         current = null;
+        gameObject.transform.GetChild(0).gameObject.SetActive(false);
 
         Load("ralph");
-        //StartCoroutine(Wait(2));
-        // Wait(2);
-        // Wait(2);
-        // Display("ralph");
-        // Wait(2);
     }
     
     void Update() {
@@ -54,19 +50,18 @@ public class DialogueDisplayer : MonoBehaviour
             }
             current = fileName;
             next = 0;
-            foreach (string s in boxes)
-                Debug.Log(s);
         }
     }
 
     public bool Next() {
-        if (next > boxes.Count)
+        if (next >= boxes.Count) {
+            gameObject.transform.GetChild(0).gameObject.SetActive(false);
             return false;
-        if (next == boxes.Count)
-            text = "";
-        else
+        } else {
+            gameObject.transform.GetChild(0).gameObject.SetActive(true);
             text = boxes[next++];
-        return true;
+            return true;
+        }
     }
 
     public void Clear() {
