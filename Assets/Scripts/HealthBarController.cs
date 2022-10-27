@@ -8,8 +8,7 @@ public class HealthBarController : MonoBehaviour
     private float inicialWidth;
     public float max;
 
-    private float curr;
-    public float current { get { return curr; } }
+    public float curr;
 
     private RectTransform rt;
 
