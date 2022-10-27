@@ -19,12 +19,15 @@ public class PlayerMovement : MonoBehaviour
     public float costeCorrerFps;
     public float costeSalto;
     public float costeParedFps;
+    public float costeCoefCaida;
 
     public LayerMask groundlayer;
     // Representa si está tocando "groundlayer" (en cualquier dirección)
     public bool onGround;
     public bool onLeftWall;
     public bool onRightWall;
+    public bool onDowntWall;
+    private bool wasOnDowntWall;
     public bool isGrabingWall;
 
     private float radius;
@@ -54,10 +57,17 @@ public class PlayerMovement : MonoBehaviour
     {
         onLeftWall  = Physics2D.OverlapCircle(new Vector2(transform.position.x-radius, transform.position.y-0.8f*radius), 0.05f, groundlayer);
         onRightWall = Physics2D.OverlapCircle(new Vector2(transform.position.x+radius, transform.position.y-0.8f*radius), 0.05f, groundlayer);
+
+        // Daño de caída
+        onDowntWall = Physics2D.OverlapCircle(new Vector2(transform.position.x, transform.position.y-2f*radius), 0.01f, groundlayer);
+        if (onDowntWall && !wasOnDowntWall)
+                health.Add(costeCoefCaida*rb.velocity.y);
+        wasOnDowntWall = onDowntWall;
+
         
         Vector2 stepForce = new Vector2(0,0);
         
-        if ((Input.GetKey("d")&onRightWall) | (Input.GetKey("a")&onLeftWall)) {
+        if ((Input.GetKey("d")&&onRightWall) || (Input.GetKey("a")&&onLeftWall)) {
             isGrabingWall = true;
             // Apagamos la grabedad para poder quedarnos quietos en una pared
             rb.gravityScale = 0;
