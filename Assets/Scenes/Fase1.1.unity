@@ -518,6 +518,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   max: 100
+  coeficiente: 1
   curr: 0
 --- !u!222 &922686780
 CanvasRenderer:

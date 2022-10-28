@@ -7,6 +7,7 @@ public class HealthBarController : MonoBehaviour
 
     private float inicialWidth;
     public float max;
+    public float coeficiente;
 
     public float curr;
 
@@ -33,12 +34,12 @@ public class HealthBarController : MonoBehaviour
     }
 
     public bool Add(float value) {
-        curr += value;
+        curr += value*coeficiente;
         return UpdateBar();
     }
 
     public bool Mult(float value) {
-        curr *= value;
+        curr *= value*coeficiente;
         return UpdateBar();
     }
 
