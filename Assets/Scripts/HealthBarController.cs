@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class HealthBarController : MonoBehaviour
 {
+    public GameObject gameBase_access;
+    private GameStateEngine gse;
 
     private float inicialWidth;
     public float max;
@@ -13,19 +15,25 @@ public class HealthBarController : MonoBehaviour
 
     private RectTransform rt;
 
-    void Start()
-    {
+    void Start()  {
+        gse = gameBase_access.GetComponent<GameStateEngine>();
+
         rt = gameObject.GetComponent<RectTransform>();
         curr = max;
         inicialWidth = rt.localScale.x;
     }
 
     private bool UpdateBar(){
+        if (curr <= 0) {
+            gse.GameOver();
+            return false;
+        }
+
         if (curr > max)
             curr = max;
         float newWidth = curr / max * inicialWidth;
         rt.localScale = new Vector3(newWidth, rt.localScale.y, rt.localScale.z);
-        return curr >= 0;
+        return true;
     }
 
     public bool Set(float value) {
