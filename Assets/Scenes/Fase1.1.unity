@@ -941,6 +941,7 @@ GameObject:
   - component: {fileID: 811410873}
   - component: {fileID: 811410872}
   - component: {fileID: 811410871}
+  - component: {fileID: 811410874}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1014,6 +1015,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &811410874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811410870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12477fc3263284c4e8e376e007ea1ae3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1240246234}
 --- !u!1 &880712340
 GameObject:
   m_ObjectHideFlags: 0
@@ -1312,7 +1326,7 @@ GameObject:
   - component: {fileID: 1240246237}
   - component: {fileID: 1240246240}
   m_Layer: 0
-  m_Name: Zelda
+  m_Name: Avatar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1326,7 +1340,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1240246234}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.0363, y: -1.6057, z: -9.421608}
+  m_LocalPosition: {x: -7.0363, y: -2.48, z: -9.421608}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1420,7 +1434,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &1240246239
 MonoBehaviour:
@@ -1435,10 +1449,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 922686776}
-  startx: 0
-  starty: 0
+  startx: -7
+  starty: -2
   fuerzaAndar: 300
   fuerzaSalto: 170
+  coeficienteSaltoPared: 0.5
+  fuerzaSaltoImpulsoLateral: 60
   fuerzaCarrera: 450
   rozamientoSuelo: 0.6
   rozamientoAire: 0.01

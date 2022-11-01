@@ -10,6 +10,9 @@ public class PlayerMovement : MonoBehaviour
     private float fuerza;
     public float fuerzaAndar;
     public float fuerzaSalto;
+    public float coeficienteSaltoPared;
+    //Al saltar se añade un impulso lateral adicional según la dirección
+    public float fuerzaSaltoImpulsoLateral;
     public float fuerzaCarrera;
     public float rozamientoSuelo;
     public float rozamientoAire;
@@ -95,8 +98,16 @@ public class PlayerMovement : MonoBehaviour
         } else if (Input.GetKeyUp("space")){
             fuerza = fuerzaAndar;
             costeHorizontal = costeAndarFps;
-            if (onGround) {
-                stepForce += new Vector2(0, fuerzaSalto);
+            if (onDowntWall || isGrabingWall) {
+                float fuerzaY = fuerzaSalto * (isGrabingWall ? coeficienteSaltoPared : 1);
+
+                float fuerzaX = 0;
+                if (Input.GetKey("d"))
+                    fuerzaX += fuerzaSaltoImpulsoLateral;
+                if (Input.GetKey("a"))
+                    fuerzaX += -fuerzaSaltoImpulsoLateral;
+
+                stepForce += new Vector2(fuerzaX, fuerzaY);
                 health.Add(-costeSalto);
             }
         }
