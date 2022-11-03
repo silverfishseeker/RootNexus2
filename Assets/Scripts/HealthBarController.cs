@@ -46,6 +46,11 @@ public class HealthBarController : MonoBehaviour
         return UpdateBar();
     }
 
+    public bool AddDelta(float value) {
+        curr += value*coeficiente*Time.deltaTime;
+        return UpdateBar();
+    }
+
     public bool Mult(float value) {
         curr *= value*coeficiente;
         return UpdateBar();

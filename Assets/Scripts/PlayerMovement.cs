@@ -70,14 +70,14 @@ public class PlayerMovement : MonoBehaviour
         
         Vector2 stepForce = new Vector2(0,0);
         
-        if ((Input.GetKey("d")&&onRightWall) || (Input.GetKey("a")&&onLeftWall)) {
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        if ((horizontal>0 && onRightWall)  ||  (horizontal<0 && onLeftWall)) {
             isGrabingWall = true;
             // Apagamos la grabedad para poder quedarnos quietos en una pared
             rb.gravityScale = 0;
-            if (Input.GetKey("w"))
-                stepForce += new Vector2(0, timeTorce);
-            if (Input.GetKey("s"))
-                stepForce += new Vector2(0, -timeTorce);
+            stepForce += new Vector2(0, timeTorce*vertical);
 
             // Fuerza hacia la pared para que no nos despeguemos de ella
             if (onRightWall)
@@ -85,40 +85,33 @@ public class PlayerMovement : MonoBehaviour
             if (onLeftWall)
                 stepForce += new Vector2(-0.5f * timeTorce, 0);
             
-            health.Add(-costeParedFps);
+            health.AddDelta(-costeParedFps);
 
         } else {
             isGrabingWall = false;
             rb.gravityScale = gForce;
         }
 
-        if (Input.GetKey("space") & onGround) {
+        if (Input.GetButton("Jump") & onGround) {
             fuerza = fuerzaCarrera;
             costeHorizontal = costeCorrerFps;
-        } else if (Input.GetKeyUp("space")){
+        } else if (Input.GetButtonUp("Jump")){
             fuerza = fuerzaAndar;
             costeHorizontal = costeAndarFps;
             if (onDowntWall || isGrabingWall) {
                 float fuerzaY = fuerzaSalto * (isGrabingWall ? coeficienteSaltoPared : 1);
 
                 float fuerzaX = 0;
-                if (Input.GetKey("d"))
-                    fuerzaX += fuerzaSaltoImpulsoLateral;
-                if (Input.GetKey("a"))
-                    fuerzaX += -fuerzaSaltoImpulsoLateral;
+                fuerzaX += fuerzaSaltoImpulsoLateral*horizontal;
 
                 stepForce += new Vector2(fuerzaX, fuerzaY);
                 health.Add(-costeSalto);
             }
         }
-
-        if (Input.GetKey("a")) {
-            stepForce += new Vector2(-timeTorce, 0);
-            health.Add(-costeHorizontal);
-        }
-        if (Input.GetKey("d")) {
-            stepForce += new Vector2(timeTorce, 0);
-            health.Add(-costeHorizontal);
+        
+        if (horizontal != 0) {
+            stepForce += new Vector2(timeTorce*horizontal, 0);
+            health.AddDelta(-costeHorizontal);
         }
 
         rb.AddForce(stepForce);

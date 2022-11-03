@@ -26,12 +26,10 @@ public class DialogueDisplayer : MonoBehaviour
         tmp = textTMP.GetComponent<TextMeshProUGUI>();
         current = null;
         gameObject.transform.GetChild(0).gameObject.SetActive(false);
-
-        Load("ralph");
     }
     
     void Update() {
-        if (Input.GetKeyUp("g"))
+        if (Input.GetButtonUp("Jump"))
             Next();
     }
 

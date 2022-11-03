@@ -35,10 +35,20 @@ public class GameStateEngine : MonoBehaviour
 
     public void Reload() {
         SceneManager.LoadScene(scene.name);
-        //gameOverImage.SetActive();
+        gameOverImage.SetActive(false);
     }
 
     public void ShutDown() {
         Application.Quit();
+    }
+
+    // https://gamedevbeginner.com/the-right-way-to-pause-the-game-in-unity/#pause_time_scale
+    void Pause () {
+        Time.timeScale = 0f;
+        AudioListener.pause = true;
+    }
+    void Resume () {
+        Time.timeScale = 1;
+        AudioListener.pause = false;
     }
 }
