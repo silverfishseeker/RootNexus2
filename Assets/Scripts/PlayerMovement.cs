@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System; // Math.Pow
 
 public class PlayerMovement : MonoBehaviour {
     public float startx, starty;
@@ -19,6 +20,7 @@ public class PlayerMovement : MonoBehaviour {
     public float costeCorrerFps;
     public float costeSalto;
     public float costeParedFps;
+    public float costeBaseExpCaida;
     public float costeCoefCaida;
 
     public LayerMask groundlayer;
@@ -61,8 +63,11 @@ public class PlayerMovement : MonoBehaviour {
 
         // Daño de caída
         onDowntWall = Physics2D.OverlapCircle(new Vector2(transform.position.x, transform.position.y-2f*radius), 0.01f, groundlayer);
-        if (onDowntWall && !wasOnDowntWall)
-            health.Add(costeCoefCaida*rb.velocity.y);
+        if (onDowntWall && !wasOnDowntWall) {
+            float f = ((float)Math.Pow(costeBaseExpCaida, rb.velocity.y*rb.velocity.y)-1f)*costeCoefCaida;
+            Debug.Log(-f);
+            health.Add(-f);
+        }
         wasOnDowntWall = onDowntWall;
 
         
