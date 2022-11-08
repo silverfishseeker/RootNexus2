@@ -3,52 +3,67 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameStateEngine : MonoBehaviour
-{
-    public GameObject myself;
+public class GameStateEngine : MonoBehaviour {
     public GameObject gameOverImage;
-    public List<GameObject> killMe;
+    //public GameObject healthBar;
+    public HealthBarController hbc;
+    public DialogueDisplayer dd;
+    
+    //public List<GameObject> killMe;
+    public static bool isPaused;
 
-    private Scene scene;
+    private static Scene scene;
 
-    // Start is called before the first frame update
+    public static GameStateEngine gse;
+
     void Start() {
-		//Le indico que no se destruya al cargar otra escena 
-		DontDestroyOnLoad(myself);
-        gameOverImage.SetActive(false);
-        scene = SceneManager.GetActiveScene();
-
-        // everyoneElse = new List<GameObject>();
-        // foreach(GameObject go in scene.GetRootGameObjects()){
-        //     if (!(go.Equals(myself) || excludedObjects.Contains(go))) {
-        //         everyoneElse.Add(go);
-        //     }
-        // }
-    }
-
-    public void GameOver() {
-        foreach (GameObject go in killMe) {
-            go.SetActive(false);
+        // singleton
+        if (gse == null) {
+            gse = this;
+            DontDestroyOnLoad(gse);
+        } else {
+            Destroy(gameObject);
         }
-        gameOverImage.SetActive(true);
+
+        scene = SceneManager.GetActiveScene();
+        Resume();
+        gse.gameOverImage.SetActive(false);
     }
 
-    public void Reload() {
+    public static void GameOver() {
+        // foreach (GameObject go in gse.killMe) {
+        //     go.SetActive(false);
+        // }
+        Pause();
+        gse.gameOverImage.SetActive(true);
+    }
+
+    public static void Reload() {
         SceneManager.LoadScene(scene.name);
-        gameOverImage.SetActive(false);
+        gse.hbc.Reset();
+        gse.gameOverImage.SetActive(false);
     }
 
-    public void ShutDown() {
+    public static void ShutDown() {
         Application.Quit();
     }
-
+    
     // https://gamedevbeginner.com/the-right-way-to-pause-the-game-in-unity/#pause_time_scale
-    void Pause () {
+    public static void Pause() {
+        isPaused = true;
         Time.timeScale = 0f;
         AudioListener.pause = true;
     }
-    void Resume () {
+    public static void Resume() {
+        isPaused = false;
         Time.timeScale = 1;
         AudioListener.pause = false;
+    }
+
+    void Update() {
+        if (Input.GetKeyUp("l")) {
+            if (isPaused) Resume();
+            else Pause();
+        }
     }
 }

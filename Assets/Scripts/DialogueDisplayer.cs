@@ -21,15 +21,17 @@ public class DialogueDisplayer : MonoBehaviour
     private string current;
     private List<string> boxes = new List<string>();
     private int next = 0;
+    private bool isSpeaking;
 
     void Start() {
         tmp = textTMP.GetComponent<TextMeshProUGUI>();
         current = null;
         gameObject.transform.GetChild(0).gameObject.SetActive(false);
+        isSpeaking = false;
     }
     
     void Update() {
-        if (Input.GetButtonUp("Jump"))
+        if (Input.GetButtonUp("Jump") && isSpeaking)
             Next();
     }
 
@@ -49,16 +51,18 @@ public class DialogueDisplayer : MonoBehaviour
             current = fileName;
             next = 0;
         }
+        GameStateEngine.Pause();
+        isSpeaking = true;
     }
 
-    public bool Next() {
+    public void Next() {
         if (next >= boxes.Count) {
             gameObject.transform.GetChild(0).gameObject.SetActive(false);
-            return false;
+            isSpeaking = false;
+            GameStateEngine.Resume();
         } else {
             gameObject.transform.GetChild(0).gameObject.SetActive(true);
             text = boxes[next++];
-            return true;
         }
     }
 

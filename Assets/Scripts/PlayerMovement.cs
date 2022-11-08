@@ -2,10 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
-{
-    public GameObject healthBar;
-
+public class PlayerMovement : MonoBehaviour {
     public float startx, starty;
     private float fuerza;
     public float fuerzaAndar;
@@ -39,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     private float gForce;
     private HealthBarController health;
 
+    private float timeTorce { get { return fuerza*Time.deltaTime; } }
 
     void Start() {
         transform.position = new Vector3(startx, starty, 0);
@@ -46,25 +44,25 @@ public class PlayerMovement : MonoBehaviour
         sr = gameObject.GetComponent<SpriteRenderer>();
         rb = gameObject.GetComponent<Rigidbody2D>();
         gForce = rb.gravityScale;
-        health  = healthBar.GetComponent<HealthBarController>();
+        // Para que lo siguiente funcione es imprescindible que GameStateEngine se ejecute primero. esto se logra en Script Execution Order
+        health  = GameStateEngine.gse.hbc;
         fuerza = fuerzaAndar;
         costeHorizontal = costeAndarFps;
     }
     
-    private float timeTorce {
-        get { return fuerza*Time.deltaTime; }
-    }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
+        if (GameStateEngine.isPaused)
+            return;
+
         onLeftWall  = Physics2D.OverlapCircle(new Vector2(transform.position.x-radius, transform.position.y-0.8f*radius), 0.05f, groundlayer);
         onRightWall = Physics2D.OverlapCircle(new Vector2(transform.position.x+radius, transform.position.y-0.8f*radius), 0.05f, groundlayer);
 
         // Daño de caída
         onDowntWall = Physics2D.OverlapCircle(new Vector2(transform.position.x, transform.position.y-2f*radius), 0.01f, groundlayer);
         if (onDowntWall && !wasOnDowntWall)
-                health.Add(costeCoefCaida*rb.velocity.y);
+            health.Add(costeCoefCaida*rb.velocity.y);
         wasOnDowntWall = onDowntWall;
 
         

@@ -864,7 +864,7 @@ GameObject:
   - component: {fileID: 581974384}
   - component: {fileID: 581974387}
   - component: {fileID: 581974386}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Clickable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -909,9 +909,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 581524355
+  m_SortingLayer: -1
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: dccc68b423297c14fbb7b1bbc191b70e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -978,7 +978,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   message: ralph
-  dialoguecontainer: {fileID: 69172122}
+  avatar: {fileID: 1240246234}
+  distancia: 3
 --- !u!1 &803253448
 GameObject:
   m_ObjectHideFlags: 0
@@ -1140,7 +1141,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &811410874
 MonoBehaviour:
@@ -1274,7 +1275,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a5860df615a6d347a33eb59809261e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameBase_access: {fileID: 2064891056}
   max: 100
   coeficiente: 1
   curr: 0
@@ -1325,7 +1325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1147530646}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: ContenedorDeHablantes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1346,7 +1346,7 @@ Transform:
   m_Children:
   - {fileID: 581974385}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1154914634
 GameObject:
@@ -1544,8 +1544,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -154044765
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 607216fe647521d4381d147b049b13d8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1607,7 +1607,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3adf7fff9b2b1a4eb41d2cdde93f966, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBar: {fileID: 922686776}
   startx: -7
   starty: -2
   fuerzaAndar: 300
@@ -1668,7 +1667,7 @@ GameObject:
   - component: {fileID: 1350216050}
   - component: {fileID: 1350216049}
   - component: {fileID: 1350216051}
-  m_Layer: 8
+  m_Layer: 3
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1728,8 +1727,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -185692401
+  m_SortingLayer: -2
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -2885,7 +2884,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1521098251}
   - component: {fileID: 1521098253}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: resaltado
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2945,8 +2944,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 581524355
+  m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: fa419d9fed0745d4fb2be7570bb52fc3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -3091,12 +3090,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4ed278c404ffb64ca79b48bebca1165, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myself: {fileID: 2064891056}
   gameOverImage: {fileID: 803253448}
-  killMe:
-  - {fileID: 1240246234}
-  - {fileID: 922686776}
-  - {fileID: 69172122}
+  hbc: {fileID: 922686779}
+  dd: {fileID: 69172124}
 --- !u!4 &2064891058
 Transform:
   m_ObjectHideFlags: 0
@@ -3111,5 +3107,5 @@ Transform:
   m_Children:
   - {fileID: 1649633807}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -6,7 +6,6 @@ public class ClickableReader : MonoBehaviour
 {
     public string message;
     public GameObject avatar;
-    public GameObject dialoguecontainer;
     public float distancia;
 
     private DialogueDisplayer dd;
@@ -14,7 +13,7 @@ public class ClickableReader : MonoBehaviour
     private SpriteRenderer rsp;
 
     void Start() {
-        dd = dialoguecontainer.GetComponent<DialogueDisplayer>();
+        dd = GameStateEngine.gse.dd;
         resaltado = gameObject.transform.GetChild(0).gameObject;
         rsp = resaltado.GetComponent<SpriteRenderer>();
         resaltado.SetActive(false);
@@ -36,7 +35,9 @@ public class ClickableReader : MonoBehaviour
         }
     }
     void OnMouseDown() {
-        dd.Load("ralph");
-        dd.Next();
+        if (distancia > Vector2.Distance(gameObject.transform.position, avatar.transform.position)) {
+            dd.Load(message);
+            dd.Next();
+        }
     }
 }
