@@ -48,6 +48,8 @@ public class PlayerMovement : MonoBehaviour {
         gForce = rb.gravityScale;
         // Para que lo siguiente funcione es imprescindible que GameStateEngine se ejecute primero. esto se logra en Script Execution Order
         health  = GameStateEngine.gse.hbc;
+        GameStateEngine.gse.avatar = gameObject;
+
         fuerza = fuerzaAndar;
         costeHorizontal = costeAndarFps;
     }

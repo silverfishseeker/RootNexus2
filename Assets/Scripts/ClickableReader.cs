@@ -5,7 +5,6 @@ using UnityEngine;
 public class ClickableReader : MonoBehaviour
 {
     public string message;
-    public GameObject avatar;
     public float distancia;
 
     private DialogueDisplayer dd;
@@ -28,14 +27,14 @@ public class ClickableReader : MonoBehaviour
     }
 
     void Update() {
-        if (distancia > Vector2.Distance(gameObject.transform.position, avatar.transform.position)) {
+        if (distancia > Vector2.Distance(gameObject.transform.position, GameStateEngine.gse.avatar.transform.position)) {
             rsp.color = Color.white;
         } else {
             rsp.color = Color.gray;
         }
     }
     void OnMouseDown() {
-        if (distancia > Vector2.Distance(gameObject.transform.position, avatar.transform.position)) {
+        if (distancia > Vector2.Distance(gameObject.transform.position, GameStateEngine.gse.avatar.transform.position)) {
             dd.Load(message);
             dd.Next();
         }

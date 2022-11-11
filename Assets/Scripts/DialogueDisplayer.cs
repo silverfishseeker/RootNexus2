@@ -13,6 +13,8 @@ public class DialogueDisplayer : MonoBehaviour
     public int linesPerBox;
     public int charsPerLine;
 
+
+    private GameObject cloudDialogue;
     private TextMeshProUGUI tmp;
     private string text{
         get{return tmp.text;}
@@ -26,20 +28,30 @@ public class DialogueDisplayer : MonoBehaviour
     void Start() {
         tmp = textTMP.GetComponent<TextMeshProUGUI>();
         current = null;
-        gameObject.transform.GetChild(0).gameObject.SetActive(false);
         isSpeaking = false;
+        cloudDialogue = gameObject.transform.GetChild(0).gameObject;
+        cloudDialogue.SetActive(false);
     }
     
     void Update() {
-        if (Input.GetButtonUp("Jump") && isSpeaking)
-            Next();
+        if (isSpeaking) {
+            if (Input.GetButtonUp("Jump"))
+                Next();
+
+        } else
+            GameStateEngine.Resume();
     }
 
     public void Load(string fileName) {
         using(StreamReader reader = new StreamReader(speakingsPath + fileName + ".txt")) {
             boxes = new List<string>();
             string box = "";
-            while (!reader.EndOfStream) {
+            while (true) {
+                if(reader.EndOfStream) {
+                    boxes.Add(box);
+                    break;
+                }
+
                 string line = reader.ReadLine();
                 if (line == "/") {
                     boxes.Add(box);
@@ -57,11 +69,10 @@ public class DialogueDisplayer : MonoBehaviour
 
     public void Next() {
         if (next >= boxes.Count) {
-            gameObject.transform.GetChild(0).gameObject.SetActive(false);
+            cloudDialogue.SetActive(false);
             isSpeaking = false;
-            GameStateEngine.Resume();
         } else {
-            gameObject.transform.GetChild(0).gameObject.SetActive(true);
+            cloudDialogue.SetActive(true);
             text = boxes[next++];
         }
     }

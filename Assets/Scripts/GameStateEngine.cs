@@ -8,6 +8,14 @@ public class GameStateEngine : MonoBehaviour {
     //public GameObject healthBar;
     public HealthBarController hbc;
     public DialogueDisplayer dd;
+
+    /*CUIDADO la referencia de avatar se instancia dentro de su 
+    propio controlador y no en esta clase. Además Avatar no forma
+    parte de GameBase. Eso quiere decir que el objeto puede
+    dejar de exsistir y que de un error cuando se intente acceder
+    a este atributo. Esto puede ser una fuente de posibles bugs.
+    Mirar si en un futuro hay que meter Avatar en GameBase*/
+    public GameObject avatar;
     
     //public List<GameObject> killMe;
     public static bool isPaused;
