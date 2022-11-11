@@ -1,0 +1,6 @@
+abajo
+arriba
+izquierda
+derecha
+
+bug SALTO FINAL DIALOGO
