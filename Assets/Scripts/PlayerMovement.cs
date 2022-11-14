@@ -67,7 +67,6 @@ public class PlayerMovement : MonoBehaviour {
         onDowntWall = Physics2D.OverlapCircle(new Vector2(transform.position.x, transform.position.y-2f*radius), 0.01f, groundlayer);
         if (onDowntWall && !wasOnDowntWall) {
             float f = ((float)Math.Pow(costeBaseExpCaida, rb.velocity.y*rb.velocity.y)-1f)*costeCoefCaida;
-            Debug.Log(-f);
             health.Add(-f);
         }
         wasOnDowntWall = onDowntWall;
