@@ -11,6 +11,8 @@ public class PlayerMovement : MonoBehaviour {
     public float coeficienteSaltoPared;
     //Al saltar se añade un impulso lateral adicional según la dirección
     public float fuerzaSaltoImpulsoLateral;
+    // El salto desde una pared te desprende de ella
+    public float coeficienteSaltoImpulsoLateralPared;
     public float fuerzaCarrera;
     public float rozamientoSuelo;
     public float rozamientoAire;
@@ -102,13 +104,13 @@ public class PlayerMovement : MonoBehaviour {
         } else if (Input.GetButtonUp("Jump")){
             fuerza = fuerzaAndar;
             costeHorizontal = costeAndarFps;
-            if (onDowntWall || isGrabingWall) {
-                float fuerzaY = fuerzaSalto * (isGrabingWall ? coeficienteSaltoPared : 1);
-
-                float fuerzaX = 0;
-                fuerzaX += fuerzaSaltoImpulsoLateral*horizontal;
-
-                stepForce += new Vector2(fuerzaX, fuerzaY);
+            if (onDowntWall) {
+                stepForce += new Vector2(fuerzaSaltoImpulsoLateral*horizontal, fuerzaSalto);
+                health.Add(-costeSalto);
+            } else if (isGrabingWall) {
+                stepForce += new Vector2(
+                    -fuerzaSaltoImpulsoLateral*coeficienteSaltoImpulsoLateralPared*horizontal,
+                    fuerzaSalto*coeficienteSaltoPared);
                 health.Add(-costeSalto);
             }
         }
@@ -120,6 +122,7 @@ public class PlayerMovement : MonoBehaviour {
 
         rb.AddForce(stepForce);
 
+        // BORRAR
         if (Input.GetKey("q")) {
             gameObject.transform.position = new Vector3(startx, starty, 0);
         }
