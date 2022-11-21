@@ -8,6 +8,9 @@ public class GameStateEngine : MonoBehaviour {
     //public GameObject healthBar;
     public HealthBarController hbc;
     public DialogueDisplayer dd;
+    public ItemsMananger im;
+    public Canvas canvas;
+    public ObjetosInventario oi;
 
     /*CUIDADO la referencia de avatar se instancia dentro de su 
     propio controlador y no en esta clase. Además Avatar no forma
