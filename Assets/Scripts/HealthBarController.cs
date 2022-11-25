@@ -8,7 +8,6 @@ public class HealthBarController : MonoBehaviour
     private float inicialWidth;
     public float max;
     public float coeficiente;
-
     public float curr;
 
     private RectTransform rt;
@@ -26,7 +25,7 @@ public class HealthBarController : MonoBehaviour
 
     private void Set(float value) {
         if (!GameStateEngine.isPaused) {
-            curr = value*coeficiente;
+            curr = value;
             if (curr <= 0) {
                 GameStateEngine.GameOver();
             } else {
@@ -39,15 +38,15 @@ public class HealthBarController : MonoBehaviour
     }
 
     public void Add(float value) {
-        Set(curr + value);
+        Set(curr + value*coeficiente);
     }
 
     public void AddDelta(float value) {
-        Set(curr + value*Time.deltaTime);
+        Set(curr + value*Time.deltaTime*coeficiente);
     }
 
     public void Mult(float value) {
-        Set(curr * value);
+        Set(curr * value*coeficiente);
     }
 
     void Update()

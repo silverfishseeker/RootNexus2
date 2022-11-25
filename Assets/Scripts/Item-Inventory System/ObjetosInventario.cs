@@ -31,24 +31,10 @@ public class ObjetosInventario : MonoBehaviour {
         }
     }
 
-    void Start(){
-        im = GameStateEngine.gse.im;
+    public void Load() {
+        CrearMalla();
         objetos = new Dictionary<int,Item>();
         identificarItem = new Dictionary<string, int>();
-        inventoryFile = GameStaticAccess.DataFolder+inventoryFile;
-        CrearMalla();
-        //foreach(SlotManager sm)
-    }
-
-    public void Save() {
-        using (StreamWriter sw = new StreamWriter(inventoryFile)) {
-            foreach (KeyValuePair<int, Item> kvp in objetos) {
-                sw.WriteLine(kvp.Key + FILE_SEP + kvp.Value.ID);                    
-            }
-        }
-    }
-
-    public void Load() {
         if (File.Exists(inventoryFile)) {
             using (StreamReader sr = new StreamReader(inventoryFile)) {
                 string line;
@@ -56,6 +42,20 @@ public class ObjetosInventario : MonoBehaviour {
                     string[] ss = line.Split(FILE_SEP);
                     Add(im.GetItemById(ss[1]).GetMe(), int.Parse(ss[0]));
                 }
+            }
+        }
+    }
+
+    public void PreStart(){
+        im = GameStateEngine.gse.im;
+        inventoryFile = GameStaticAccess.DataFolder+inventoryFile;
+        Load();
+    }
+
+    public void Save() {
+        using (StreamWriter sw = new StreamWriter(inventoryFile)) {
+            foreach (KeyValuePair<int, Item> kvp in objetos) {
+                sw.WriteLine(kvp.Key + FILE_SEP + kvp.Value.ID);                    
             }
         }
     }

@@ -24,6 +24,7 @@ public class DialogueDisplayer : MonoBehaviour
     private List<string> boxes = new List<string>();
     private int next = 0;
     private bool isSpeaking;
+    private bool justStopedSpeaking = false;
 
     void Start() {
         tmp = textTMP.GetComponent<TextMeshProUGUI>();
@@ -34,12 +35,14 @@ public class DialogueDisplayer : MonoBehaviour
     }
     
     void Update() {
-        if (isSpeaking) {
-            if (Input.GetButtonUp("Jump"))
+        if (Input.GetButtonUp("Jump")) {
+            if (isSpeaking)
                 Next();
-
-        } else
+        } else if (justStopedSpeaking){
             GameStateEngine.Resume();
+            justStopedSpeaking = false;
+        }
+
     }
 
     public void Load(string fileName) {
@@ -71,6 +74,7 @@ public class DialogueDisplayer : MonoBehaviour
         if (next >= boxes.Count) {
             cloudDialogue.SetActive(false);
             isSpeaking = false;
+            justStopedSpeaking = true;
         } else {
             cloudDialogue.SetActive(true);
             text = boxes[next++];

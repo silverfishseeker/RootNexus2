@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SlotManager : IUSelectable {
+public class SlotManager : UISelectable {
     public static int lastTouched = -1;
 
     public int slotPos;

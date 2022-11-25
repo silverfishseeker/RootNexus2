@@ -46,7 +46,7 @@ public class ItemsMananger : MonoBehaviour {
         File.WriteAllLines(RegPath, ReadIDs.Intersect(ChildsIds())); // ReadIDs - childsIds
     }
 
-    void Start() {
+    public void PreStart() {
         items = new Dictionary<string,Item>();
         foreach (Transform child in transform)
             items[child.GetComponent<Item>().ID] = child.GetComponent<Item>();
