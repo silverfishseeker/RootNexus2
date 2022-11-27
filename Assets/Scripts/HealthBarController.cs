@@ -1,15 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System;
 
-public class HealthBarController : MonoBehaviour
-{
+public class HealthBarController : MonoBehaviour {
 
     private float inicialWidth;
     public float max;
     public float coeficiente;
     public float curr;
+    public Color baseColor;
+    public Color maxColor;
+    private Color diffColor => maxColor-baseColor;
+    public float coeficienteCambioColor;
+    public float desplazamientoCambioColor;
+    public float duracionColor;
 
+    private float currIncr = 0;
+    private float correction => 1f/(1f+(float)Math.Exp(coeficienteCambioColor*desplazamientoCambioColor)); // para asegurar la función en (0,0)
     private RectTransform rt;
 
     void Start()  {
@@ -23,46 +32,43 @@ public class HealthBarController : MonoBehaviour
         rt.localScale = new Vector3(inicialWidth, rt.localScale.y, rt.localScale.z);
     }
 
-    private void Set(float value) {
-        if (!GameStateEngine.isPaused) {
-            curr = value;
-            if (curr <= 0) {
-                GameStateEngine.GameOver();
-            } else {
-                if (curr > max)
-                    curr = max;
-                float newWidth = curr / max * inicialWidth;
-                rt.localScale = new Vector3(newWidth, rt.localScale.y, rt.localScale.z);
-            }
+    public void Add(float value) {
+        curr += value*coeficiente;
+        currIncr += value*coeficiente;
+        if (curr <= 0) {
+            GameStateEngine.GameOver();
+        } else {
+            if (curr > max)
+                curr = max;
+            float newWidth = curr / max * inicialWidth;
+            rt.localScale = new Vector3(newWidth, rt.localScale.y, rt.localScale.z);
         }
     }
 
-    public void Add(float value) {
-        Set(curr + value*coeficiente);
-    }
+    public void AddDelta(float value) => Add(value*Time.deltaTime);
 
-    public void AddDelta(float value) {
-        Set(curr + value*Time.deltaTime*coeficiente);
-    }
+    // función sigmoide
+    private float SigmoidInOO(float value) =>
+        (1f / (1f+(float)Math.Exp(
+            coeficienteCambioColor*(desplazamientoCambioColor-value)
+        ))) * (1f+correction)-correction;
+    
 
-    public void Mult(float value) {
-        Set(curr * value*coeficiente);
-    }
+    void Update() {
+        float f = SigmoidInOO(-currIncr);
+        GetComponent<Image>().color = new Color(f,f,f,1) * diffColor + baseColor;
+        currIncr *=duracionColor;
 
-    void Update()
-    {
         // Testing bar
         if (Input.GetKeyUp("u")) {
-            Set(max);
+            curr = max;
+            rt.localScale = new Vector3(inicialWidth, rt.localScale.y, rt.localScale.z);
         }
         if (Input.GetKeyUp("i")) {
             Add(-10f);
         }
         if (Input.GetKeyUp("o")) {
             Add(10f);
-        }
-        if (Input.GetKeyUp("p")) {
-            Mult(0.5f);
         }
     }
 }

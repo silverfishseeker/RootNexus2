@@ -42,7 +42,6 @@ public class GameStateEngine : MonoBehaviour {
         }
         gse.gameOverImage.SetActive(false);
         CerrarInventario();
-        Debug.Log(isPaused);
     }
 
     public static void GameOver() {
