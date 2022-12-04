@@ -8,6 +8,10 @@ public class GameStateEngine : MonoBehaviour {
     //public GameObject healthBar;
     public HealthBarController hbc;
     public DialogueDisplayer dd;
+    public ItemsMananger im;
+    public Canvas canvas;
+    public GameObject inventario;
+    public ObjetosInventario oi;
 
     /*CUIDADO la referencia de avatar se instancia dentro de su 
     propio controlador y no en esta clase. Además Avatar no forma
@@ -20,22 +24,24 @@ public class GameStateEngine : MonoBehaviour {
     //public List<GameObject> killMe;
     public static bool isPaused;
 
-    private static Scene scene;
-
     public static GameStateEngine gse;
+
+    void LoadGame() {
+        im.PreStart();
+        oi.PreStart();
+    }
 
     void Start() {
         // singleton
-        if (gse == null) {
+        if (gse != null) {
+            Destroy(gameObject);
+        } else {
             gse = this;
             DontDestroyOnLoad(gse);
-        } else {
-            Destroy(gameObject);
+            LoadGame();
         }
-
-        scene = SceneManager.GetActiveScene();
-        Resume();
         gse.gameOverImage.SetActive(false);
+        CerrarInventario();
     }
 
     public static void GameOver() {
@@ -47,7 +53,7 @@ public class GameStateEngine : MonoBehaviour {
     }
 
     public static void Reload() {
-        SceneManager.LoadScene(scene.name);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         gse.hbc.Reset();
         gse.gameOverImage.SetActive(false);
     }
@@ -68,10 +74,24 @@ public class GameStateEngine : MonoBehaviour {
         AudioListener.pause = false;
     }
 
+    public static void AbrirInventario(){
+        gse.inventario.SetActive(true);
+        Pause();
+    }
+    
+    public static void CerrarInventario(){
+        gse.inventario.SetActive(false);
+        Resume();
+    }
+
     void Update() {
         if (Input.GetKeyUp("l")) {
             if (isPaused) Resume();
             else Pause();
+        }
+        if (Input.GetKeyUp("e")) {
+            if (isPaused) CerrarInventario();
+            else AbrirInventario();
         }
     }
 }

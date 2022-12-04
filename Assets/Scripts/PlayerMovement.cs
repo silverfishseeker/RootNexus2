@@ -5,16 +5,19 @@ using System; // Math.Pow
 
 public class PlayerMovement : MonoBehaviour {
     public float startx, starty;
-    private float fuerza;
-    public float fuerzaAndar;
-    public float fuerzaSalto;
-    public float coeficienteSaltoPared;
-    //Al saltar se añade un impulso lateral adicional según la dirección
-    public float fuerzaSaltoImpulsoLateral;
+
+    // Fuerzas de movimiento
+    private float fuerza; // fuerza base de desplazamiento (vertical y horizontal)
+    public float fuerzaAndar; // también escalar
     public float fuerzaCarrera;
-    public float rozamientoSuelo;
+    public float fuerzaSalto;
+    public float fuerzaSaltoImpulsoLateral; //Al saltar se añade un impulso lateral adicional según la dirección
+    public float coeficienteSaltoPared;
+    public float coeficienteSaltoImpulsoLateralPared; // El salto desde una pared te desprende de ella
+    public float rozamientoSuelo; // mientras toque a a wall
     public float rozamientoAire;
 
+    // Costes de energía
     private float costeHorizontal;
     public float costeAndarFps;
     public float costeCorrerFps;
@@ -23,26 +26,34 @@ public class PlayerMovement : MonoBehaviour {
     public float costeBaseExpCaida;
     public float costeCoefCaida;
 
-    public LayerMask groundlayer;
-    // Representa si está tocando "groundlayer" (en cualquier dirección)
-    public bool onGround;
-    public bool onLeftWall;
-    public bool onRightWall;
-    public bool onDowntWall;
+    // Colliders
+    public Collider2D wall;
+    public Collider2D groundCollider;
+    public Collider2D rightWallCollider;
+    private Collider2D leftWallCollider; // copia del right
+
+    // Estados de tocamientos
+    public bool isTouchingWall => gameObject.GetComponent<Collider2D>().IsTouching(wall); // si el collider original del objeto está tocando el wall
+    public bool onLeftWall => leftWallCollider.IsTouching(wall);
+    public bool onRightWall => rightWallCollider.IsTouching(wall);
+    public bool onDowntWall => groundCollider.IsTouching(wall);
     private bool wasOnDowntWall;
     public bool isGrabingWall;
 
-    private float radius;
+    // Accesos a comopones propios
     private Rigidbody2D rb;
+    private float gForce; // no hay gravedad agarrado a una pared
     private SpriteRenderer sr;
-    private float gForce;
     private HealthBarController health;
 
     private float timeTorce { get { return fuerza*Time.deltaTime; } }
 
     void Start() {
         transform.position = new Vector3(startx, starty, 0);
-        radius = gameObject.GetComponent<CircleCollider2D>().radius;
+
+        leftWallCollider = Instantiate(rightWallCollider, transform);
+        leftWallCollider.offset = new Vector2(-leftWallCollider.offset.x, leftWallCollider.offset.y);
+
         sr = gameObject.GetComponent<SpriteRenderer>();
         rb = gameObject.GetComponent<Rigidbody2D>();
         gForce = rb.gravityScale;
@@ -53,36 +64,32 @@ public class PlayerMovement : MonoBehaviour {
         fuerza = fuerzaAndar;
         costeHorizontal = costeAndarFps;
     }
-    
 
     // Update is called once per frame
     void Update() {
         if (GameStateEngine.isPaused)
             return;
 
-        onLeftWall  = Physics2D.OverlapCircle(new Vector2(transform.position.x-radius, transform.position.y-0.8f*radius), 0.05f, groundlayer);
-        onRightWall = Physics2D.OverlapCircle(new Vector2(transform.position.x+radius, transform.position.y-0.8f*radius), 0.05f, groundlayer);
+        rb.drag = isTouchingWall ? rozamientoSuelo : rozamientoAire;
 
         // Daño de caída
-        onDowntWall = Physics2D.OverlapCircle(new Vector2(transform.position.x, transform.position.y-2f*radius), 0.01f, groundlayer);
         if (onDowntWall && !wasOnDowntWall) {
             float f = ((float)Math.Pow(costeBaseExpCaida, rb.velocity.y*rb.velocity.y)-1f)*costeCoefCaida;
-            Debug.Log(-f);
             health.Add(-f);
         }
         wasOnDowntWall = onDowntWall;
 
-        
         Vector2 stepForce = new Vector2(0,0);
         
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        float inputHorizontal = Input.GetAxis("Horizontal");
+        float inputVertical = Input.GetAxis("Vertical");
 
-        if ((horizontal>0 && onRightWall)  ||  (horizontal<0 && onLeftWall)) {
+        // Escalar
+        if ((inputHorizontal>0 && onRightWall)  ||  (inputHorizontal<0 && onLeftWall)) {
             isGrabingWall = true;
             // Apagamos la grabedad para poder quedarnos quietos en una pared
             rb.gravityScale = 0;
-            stepForce += new Vector2(0, timeTorce*vertical);
+            stepForce += new Vector2(0, timeTorce*inputVertical);
 
             // Fuerza hacia la pared para que no nos despeguemos de ella
             if (onRightWall)
@@ -97,50 +104,41 @@ public class PlayerMovement : MonoBehaviour {
             rb.gravityScale = gForce;
         }
 
-        if (Input.GetButton("Jump") & onGround) {
+        // Acelerar
+        if (Input.GetButton("Run") && isTouchingWall) {
             fuerza = fuerzaCarrera;
             costeHorizontal = costeCorrerFps;
-        } else if (Input.GetButtonUp("Jump")){
+        } else {
             fuerza = fuerzaAndar;
             costeHorizontal = costeAndarFps;
-            if (onDowntWall || isGrabingWall) {
-                float fuerzaY = fuerzaSalto * (isGrabingWall ? coeficienteSaltoPared : 1);
-
-                float fuerzaX = 0;
-                fuerzaX += fuerzaSaltoImpulsoLateral*horizontal;
-
-                stepForce += new Vector2(fuerzaX, fuerzaY);
+        }
+        
+        // Saltar
+        if (Input.GetButtonDown("Jump") && isTouchingWall) {
+            // BUG: si se pulsa la tecla lo suficiente rápido (como en 1 o 2 frames) se puede realizar doble salto, pero es demasiado difícil para un humano
+            // esto es culpa de que isTouchingWall permanece activo por demasiado tiempo tras saltar
+            if (onDowntWall) {
+                stepForce += new Vector2(fuerzaSaltoImpulsoLateral*inputHorizontal, fuerzaSalto);
+                health.Add(-costeSalto);
+            } else if (isGrabingWall) {
+                stepForce += new Vector2(
+                    -fuerzaSaltoImpulsoLateral*coeficienteSaltoImpulsoLateralPared*inputHorizontal,
+                    fuerzaSalto*coeficienteSaltoPared);
                 health.Add(-costeSalto);
             }
         }
         
-        if (horizontal != 0) {
-            stepForce += new Vector2(timeTorce*horizontal, 0);
+        // Andar
+        if (inputHorizontal != 0) {
+            stepForce += new Vector2(timeTorce*inputHorizontal, 0);
             health.AddDelta(-costeHorizontal);
         }
 
         rb.AddForce(stepForce);
 
+        // BORRAR
         if (Input.GetKey("q")) {
             gameObject.transform.position = new Vector3(startx, starty, 0);
-        }
-    }
-    
-    bool IsInLayerMask(LayerMask mask, int layer) {
-        return mask == (mask | (1 << layer));
-    }
-
-    void OnCollisionEnter2D(Collision2D other) {
-        if (IsInLayerMask(groundlayer, other.gameObject.layer)) {
-            rb.drag = rozamientoSuelo;
-            onGround = true;
-        }
-    }
-
-    void OnCollisionExit2D(Collision2D other) {
-        if (IsInLayerMask(groundlayer, other.gameObject.layer)) {
-            rb.drag = rozamientoAire;
-            onGround = false;
         }
     }
 }

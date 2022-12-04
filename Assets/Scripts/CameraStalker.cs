@@ -14,6 +14,6 @@ public class CameraStalker : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        transform.position = new Vector3(pt.position.x, pt.position.y, pt.position.y-1);
+        transform.position = new Vector3(pt.position.x, pt.position.y, transform.position.z);
     }
 }
