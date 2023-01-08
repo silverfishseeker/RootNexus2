@@ -40,7 +40,7 @@ public class ObjetosInventario : MonoBehaviour {
                 string line;
                 while ((line = sr.ReadLine()) != null) {
                     string[] ss = line.Split(FILE_SEP);
-                    Add(im.GetItemById(ss[1]).GetMe(), int.Parse(ss[0]));
+                    Add(im.GetItemById(ss[1]).GetNewMe(), int.Parse(ss[0]));
                 }
             }
         }
