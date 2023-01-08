@@ -9,6 +9,9 @@ public class HealthBarController : MonoBehaviour {
     private float inicialWidth;
     public float max;
     public float coeficiente;
+    public float regeneration;
+    public float highRegeneration;
+    private float currRegen;
     public float curr;
     public Color baseColor;
     public Color maxColor;
@@ -28,6 +31,7 @@ public class HealthBarController : MonoBehaviour {
     }
 
     public void Reset(){
+        currRegen = regeneration;
         curr = max;
         rt.localScale = new Vector3(inicialWidth, rt.localScale.y, rt.localScale.z);
     }
@@ -53,8 +57,17 @@ public class HealthBarController : MonoBehaviour {
             coeficienteCambioColor*(desplazamientoCambioColor-value)
         ))) * (1f+correction)-correction;
     
+    public void IncreaseRegeneration() {
+        currRegen = highRegeneration;
+    }
+    public void DecreaseRegeneration() {
+        currRegen = regeneration;
+    }
 
     void Update() {
+        //regeneration
+        Add(currRegen);
+
         float f = SigmoidInOO(-currIncr);
         GetComponent<Image>().color = new Color(f,f,f,1) * diffColor + baseColor;
         currIncr *=duracionColor;
