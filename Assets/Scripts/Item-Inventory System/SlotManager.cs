@@ -6,6 +6,15 @@ using UnityEngine.EventSystems;
 public class SlotManager : UISelectable {
     public static int lastTouched = -1;
 
+    private string itemTitle{
+        get => GameStateEngine.gse.oi.itemTitle.text;
+        set => GameStateEngine.gse.oi.itemTitle.text = value;
+    }
+    private string itemDescrp{
+        get => GameStateEngine.gse.oi.itemDescrp.text;
+        set => GameStateEngine.gse.oi.itemDescrp.text = value;
+    }
+
     public int slotPos;
     private GameObject itemRef = null;
     public GameObject item{
@@ -66,6 +75,15 @@ public class SlotManager : UISelectable {
         }
         isSelected = true;
         img.color = selectedColor;
+
+        if(item == null) {
+            itemTitle = "";
+            itemDescrp = "";
+        } else {
+            Item it = item.GetComponent<Item>();
+            itemTitle = it.title;
+            itemDescrp = it.description;
+        }
     }
 
     
