@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System;
+using TMPro;
 using UnityEngine;
 
 public class ObjetosInventario : MonoBehaviour {
@@ -13,6 +14,9 @@ public class ObjetosInventario : MonoBehaviour {
     public int total {get => filas*columnas;}
     public float separación;
     public string inventoryFile;
+    public TextMeshProUGUI itemTitle;
+    public TextMeshProUGUI itemDescrp;
+
 
     public Dictionary<int,Item> objetos; //slotPos -> item
     public Dictionary<string, int> identificarItem; // itemid -> slotPos
@@ -40,7 +44,7 @@ public class ObjetosInventario : MonoBehaviour {
                 string line;
                 while ((line = sr.ReadLine()) != null) {
                     string[] ss = line.Split(FILE_SEP);
-                    Add(im.GetItemById(ss[1]).GetMe(), int.Parse(ss[0]));
+                    Add(im.GetItemById(ss[1]).GetNewMe(), int.Parse(ss[0]));
                 }
             }
         }

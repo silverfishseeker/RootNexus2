@@ -8,7 +8,7 @@ public class ClickableChest : ClickableReader {
     public Sprite abierto;
 
     public override void Action() {
-        GameStateEngine.gse.oi.Add(item);
+        GameStateEngine.gse.oi.Add(item.GetNewMe());
         transform.GetComponent<SpriteRenderer>().sprite = abierto;
         active = false;
         base.Action();

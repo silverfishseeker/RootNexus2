@@ -76,11 +76,13 @@ public class GameStateEngine : MonoBehaviour {
 
     public static void AbrirInventario(){
         gse.inventario.SetActive(true);
+        gse.hbc.IncreaseRegeneration();
         Pause();
     }
     
     public static void CerrarInventario(){
         gse.inventario.SetActive(false);
+        gse.hbc.DecreaseRegeneration();
         Resume();
     }
 
