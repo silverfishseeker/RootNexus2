@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 
-public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
     private Canvas canvas; 
     private ObjetosInventario inventario;
@@ -22,6 +22,9 @@ public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public override string ToString() => "Item("+ID+", "+title+")";
 
     public bool IsntID => ID == null || ID == "";
+
+    public SlotManager myslot;
+    public static bool dragging;
 
     public bool GetNewID() {
         if(IsntID || true){
@@ -50,7 +53,8 @@ public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
             throw new InvalidOperationException(message);
     }
 
-    void Start() {
+    new void Start(){
+        base.Start();
         EnsureMyself();
         canvas = GameStateEngine.gse.canvas;
         inventario = GameStateEngine.gse.oi;
@@ -62,7 +66,7 @@ public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     ////////////////////////////
 
     // Algunos items podría devolverse a sí mismo en vez de una copia
-    public Item GetMe(Transform parent = null, Vector2 position = new Vector2()) {
+    public Item GetNewMe(Transform parent = null, Vector2 position = new Vector2()) {
         GameObject go = Instantiate(gameObject, new Vector3(), new Quaternion(), parent);
         go.GetComponent<RectTransform>().anchoredPosition = position;
         return go.GetComponent<Item>();
@@ -74,6 +78,8 @@ public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         // permite que se puedan seleccionar objetos detrás del item cogido
         gameObject.GetComponent<CanvasGroup>().blocksRaycasts = false;
         originalPosition = transform.position;
+        dragging = true;
+        OnPointerClick(eventData);
     }
 
     public void OnDrag(PointerEventData data) {
@@ -87,10 +93,27 @@ public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-		if (SlotManager.lastTouched >= 0)
+		if (SlotManager.lastTouched >= 0 && SlotManager.lastTouched != myslot.slotPos){
 			inventario.Move(ID, SlotManager.lastTouched);
+            myslot.OnPointerClick(eventData);
+        }
         else
             transform.position = originalPosition;
         gameObject.GetComponent<CanvasGroup>().blocksRaycasts = true;
+        dragging = true;
 	}
+
+    
+    // seleccionable detrás:
+    public override void OnPointerEnter (PointerEventData eventData) {
+        myslot.OnPointerEnter(eventData);
+    }
+
+    public override void OnPointerExit (PointerEventData eventData) {
+        myslot.OnPointerExit(eventData);
+    }
+    
+    public override void OnPointerClick(PointerEventData eventData){
+        myslot.OnPointerClick(eventData);
+    }
 }
