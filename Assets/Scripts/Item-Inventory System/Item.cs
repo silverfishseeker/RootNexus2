@@ -13,49 +13,29 @@ public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandl
 
     public string title;
     public string description;
+
+    public int id { get; private set; }
     
-    [HideInInspector] // para que no se pueda editar a mano
-    public string ID;
 
-    public bool IsEquals(Item o) => o != null && ID == o.ID;
-
-    public override string ToString() => "Item("+ID+", "+title+")";
-
-    public bool IsntID => ID == null || ID == "";
+    public override string ToString() => "Item("+name+", "+title+")";
 
     public SlotManager myslot;
     public static bool dragging;
 
-    public bool GetNewID() {
-        if(IsntID || true){
-            string id = Guid.NewGuid().ToString();
-            if (ItemsMananger.AddNewID(id)) {
-                ID = id;
-                return true;
-            } else
-                return false;
-        } else
-            return false;
-    }
-
-    public void EnsureMyself() {
-        bool notOK = false;
-        string message = "Item "+gameObject.name+" has some problems: ";
-        if (IsntID) {
-            notOK = true;
-            message += "[It didn't get ID inizialitated, use \"Generar ID\" on editor first] ";
+    public Item(){
+        // Establecemos el id en el contructor en vez de en el start porque éste no se ejecuta hasta
+        // que se abre el inventario por primera vez, y necesitamos que tenga id antes de eso para
+        // cargar correctamente el diccionario de ObjetosInventario
+        try{ // Esto da error porque unity pre crea los objetos, pero luego funciona bien en el play
+            id = GameStateEngine.gse.GetNewId();
+        } catch(NullReferenceException) {
+            id = -1; // normalmente nunca deberíamos llegar aquí
         }
-        if (gameObject.GetComponent<Image>() == null) {
-            notOK = true;
-            message += "[It needs \"Image\" component to work.] ";
-        }
-        if (notOK)
-            throw new InvalidOperationException(message);
+       
     }
 
     new void Start(){
         base.Start();
-        EnsureMyself();
         canvas = GameStateEngine.gse.canvas;
         inventario = GameStateEngine.gse.oi;
     }
@@ -71,6 +51,7 @@ public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandl
         go.GetComponent<RectTransform>().anchoredPosition = position;
         return go.GetComponent<Item>();
     }
+
 
     // DRAG stuff
 
@@ -94,7 +75,7 @@ public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandl
 
     public void OnEndDrag(PointerEventData eventData) {
 		if (SlotManager.lastTouched >= 0 && SlotManager.lastTouched != myslot.slotPos){
-			inventario.Move(ID, SlotManager.lastTouched);
+			inventario.Move(id, SlotManager.lastTouched);
             myslot.OnPointerClick(eventData);
         }
         else

@@ -8,7 +8,6 @@ public class GameStateEngine : MonoBehaviour {
     //public GameObject healthBar;
     public HealthBarController hbc;
     public DialogueDisplayer dd;
-    public ItemsMananger im;
     public Canvas canvas;
     public GameObject inventario;
     public ObjetosInventario oi;
@@ -27,7 +26,6 @@ public class GameStateEngine : MonoBehaviour {
     public static GameStateEngine gse;
 
     void LoadGame() {
-        im.PreStart();
         oi.PreStart();
     }
 
@@ -43,6 +41,9 @@ public class GameStateEngine : MonoBehaviour {
         gse.gameOverImage.SetActive(false);
         CerrarInventario();
     }
+
+    public int nextId = 0;
+    public int GetNewId() => nextId++;
 
     public static void GameOver() {
         // foreach (GameObject go in gse.killMe) {
