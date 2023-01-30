@@ -6,7 +6,7 @@ public class ClickableReader : IClickable {
     public string message;
 
     public override void Action() {
-        GameStateEngine.gse.dd.Load(message);
-        GameStateEngine.gse.dd.Next();
+        // GameStateEngine.gse.dd.Load(message);
+        // GameStateEngine.gse.dd.Next();
     }
 }

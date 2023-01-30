@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameStateEngine : MonoBehaviour {
+
+    public ActionSetter ass;
+
+
     public GameObject gameOverImage;
     //public GameObject healthBar;
     public HealthBarController hbc;
@@ -95,6 +99,10 @@ public class GameStateEngine : MonoBehaviour {
         if (Input.GetKeyUp("e")) {
             if (isPaused) CerrarInventario();
             else AbrirInventario();
+        }
+        
+        if (Input.GetKeyUp("z")) {
+            ass.Run();
         }
     }
 }
