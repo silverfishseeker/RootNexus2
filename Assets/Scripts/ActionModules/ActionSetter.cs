@@ -8,8 +8,9 @@ public class ActionSetter : MonoBehaviour {
     
     private IBaseAction current;
 
+    public int i = 0;
+
     protected void Start(){
-        enabled = false;
         current = null;
     }
 
@@ -17,7 +18,6 @@ public class ActionSetter : MonoBehaviour {
         GameStateEngine.Pause();
         current = first;
         current.Run();
-        enabled = true;
     }
 
     protected void Update(){
@@ -25,7 +25,6 @@ public class ActionSetter : MonoBehaviour {
         while(current != null && current.isFinished) {
             current = current.next;
             if (current == null){
-                enabled = false;
                 GameStateEngine.Resume();
             } else
                 current.Run();

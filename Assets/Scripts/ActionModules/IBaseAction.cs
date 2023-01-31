@@ -6,7 +6,12 @@ public abstract class IBaseAction : MonoBehaviour {
 
     public IBaseAction next;
 
+    [HideInInspector]
     public bool isFinished = false;
     // Acción básica, devuelbe la seguiente acción que toca
-    public abstract void Run();
+    public void Run(){
+        isFinished = true;
+        SubRun();
+    }
+    protected abstract void SubRun();
 }

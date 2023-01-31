@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
  using UnityEngine.Events;
 
-public class Clickable : ActionSetter {
+public class Clickable : Activable {
     public float distancia;
 
     private GameObject resaltado;
     private SpriteRenderer rsp;
-    private static bool isntpause => GameStateEngine.isntEitherPause;
+    private bool isAvalaible => GameStateEngine.isntEitherPause && active;
     private bool isNear => distancia > Vector2.Distance(gameObject.transform.position, GameStateEngine.gse.avatar.transform.position);
 
     new protected void Start() {
@@ -19,7 +19,7 @@ public class Clickable : ActionSetter {
     }
 
     void OnMouseEnter() {
-        if(isntpause)
+        if(isAvalaible)
             resaltado.SetActive(true);
     }
 
@@ -29,15 +29,14 @@ public class Clickable : ActionSetter {
 
     new void Update() {
         base.Update();
-        if (isntpause)
-            if (isNear)
-                rsp.color = Color.white;
-            else
-                rsp.color = Color.gray;
+        if (isNear)
+            rsp.color = Color.white;
+        else
+            rsp.color = Color.gray;
     }
 
     void OnMouseDown() {
-        if (isntpause && isNear) {
+        if (isAvalaible && isNear) {
             Run();
         }
     }
