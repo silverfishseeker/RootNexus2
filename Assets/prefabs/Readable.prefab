@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7898284766829662301}
   - component: {fileID: 7898284766829662300}
-  - component: {fileID: 7898284766829662303}
   - component: {fileID: 7898284766829662302}
   m_Layer: 0
   m_Name: Readable
@@ -87,20 +86,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &7898284766829662303
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7898284766829662275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bda9c75e4e3b6ce478a45354de277897, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  message: ralph
-  distancia: 3
 --- !u!61 &7898284766829662302
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -34,8 +34,7 @@ public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandl
        
     }
 
-    new void Start(){
-        base.Start();
+    public override void OverrStart(){
         canvas = GameStateEngine.gse.canvas;
         inventario = GameStateEngine.gse.oi;
     }
@@ -56,6 +55,9 @@ public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandl
     // DRAG stuff
 
     public void OnBeginDrag(PointerEventData eventData) {
+        if (!GameStateEngine.isntPaused)
+            return;
+            
         // permite que se puedan seleccionar objetos detrás del item cogido
         gameObject.GetComponent<CanvasGroup>().blocksRaycasts = false;
         originalPosition = transform.position;
@@ -64,6 +66,9 @@ public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandl
     }
 
     public void OnDrag(PointerEventData data) {
+        if (!GameStateEngine.isntPaused)
+            return;
+
         Vector2 pos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             (RectTransform)canvas.transform,
@@ -74,11 +79,13 @@ public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandl
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-		if (SlotManager.lastTouched >= 0 && SlotManager.lastTouched != myslot.slotPos){
-			inventario.Move(id, SlotManager.lastTouched);
+        if (!GameStateEngine.isntPaused)
+            return;
+            
+		if (SlotManager.lastTouched >= 0 && SlotManager.lastTouched != myslot.slotPos &&
+                inventario.Move(id, SlotManager.lastTouched)){
             myslot.OnPointerClick(eventData);
-        }
-        else
+        }  else
             transform.position = originalPosition;
         gameObject.GetComponent<CanvasGroup>().blocksRaycasts = true;
         dragging = true;
@@ -86,15 +93,15 @@ public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandl
 
     
     // seleccionable detrás:
-    public override void OnPointerEnter (PointerEventData eventData) {
+    public override void OverrOnPointerEnter (PointerEventData eventData) {
         myslot.OnPointerEnter(eventData);
     }
 
-    public override void OnPointerExit (PointerEventData eventData) {
-        myslot.OnPointerExit(eventData);
+    public override void OverrOnPointerExit (PointerEventData eventData) {
+        myslot.OverrOnPointerExit(eventData);
     }
     
-    public override void OnPointerClick(PointerEventData eventData){
-        myslot.OnPointerClick(eventData);
+    public override void OverrOnPointerClick(PointerEventData eventData){
+        myslot.OverrOnPointerClick(eventData);
     }
 }

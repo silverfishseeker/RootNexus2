@@ -31,15 +31,10 @@ public class SlotManager : UISelectable {
 
     
     public Color selectedColor;
-    private static List<UISelectable> instancias;
+    private static List<UISelectable> instancias = new List<UISelectable>();
     public bool isSelected;
 
-    static SlotManager(){
-        instancias = new List<UISelectable>();
-    }
-
-    new void Start(){
-        base.Start();
+    public override void OverrStart(){
         isSelected = false;
         instancias.Add(this); // por algún motivo se añaden los objetos mal si esta línea se hace en el constructor, así que la dejamos en Start
     }
@@ -49,17 +44,15 @@ public class SlotManager : UISelectable {
         itemRef = null;
     }
 
-    public override void OnPointerEnter (PointerEventData eventData) {
-        if (!isSelected) {
-            base.OnPointerEnter(eventData);
-        }
+    public override void OverrOnPointerEnter (PointerEventData eventData) {
+        if (!isSelected)
+            img.color = overMouseColor;
         lastTouched = slotPos;
-            
     }
     
-    public override void OnPointerExit (PointerEventData eventData) {
+    public override void OverrOnPointerExit (PointerEventData eventData) {
         if (!isSelected)
-            base.OnPointerExit(eventData);
+            img.color = neutralColor;
         lastTouched = -1;
     }
 
@@ -68,7 +61,7 @@ public class SlotManager : UISelectable {
         base.OnPointerExit(eventData);
     }
 
-    public override void OnPointerClick(PointerEventData eventData){
+    public override void OverrOnPointerClick(PointerEventData eventData){
         foreach(SlotManager sm in instancias) {
             if (this != sm)
                 sm.Deselect(eventData);

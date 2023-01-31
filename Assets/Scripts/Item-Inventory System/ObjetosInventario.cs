@@ -34,6 +34,8 @@ public class ObjetosInventario : MonoBehaviour {
         }
     }
 
+    private Item LoadNew(string name, Transform trans) => Instantiate(Resources.Load<GameObject>(name), trans).GetComponent<Item>();
+
     public void Load() {
         CrearMalla();
         objetos = new Dictionary<int,Item>();
@@ -43,8 +45,7 @@ public class ObjetosInventario : MonoBehaviour {
                 string line;
                 while ((line = sr.ReadLine()) != null) {
                     string[] ss = line.Split(FILE_SEP);
-                    Item it = Instantiate(Resources.Load<GameObject>(ss[1]), transform).GetComponent<Item>();
-                    Add(it, int.Parse(ss[0]));
+                    Add(LoadNew(ss[1], transform), int.Parse(ss[0]));
                 }
             }
         }
@@ -80,6 +81,8 @@ public class ObjetosInventario : MonoBehaviour {
         return true;
     }
 
+    //public bool AddNewByName(string name)=> Add(LoadNew(name, transform));
+
     public Item Remove(int slotPos) {
         Item item = objetos[slotPos];
         identificarItem.Remove(item.id);
@@ -88,11 +91,12 @@ public class ObjetosInventario : MonoBehaviour {
         return item;
     }
 
-    public void Move(int itemId, int slotPos) {
+    public bool Move(int itemId, int slotPos) {
         if (slots[slotPos].item != null)
-            throw new ArgumentException("slot "+slotPos+" ya ocupado");
+            return false;
         int firstSlotPos = identificarItem[itemId];
         Add(Remove(firstSlotPos), slotPos);
+        return true;
     }
 
     void Update(){

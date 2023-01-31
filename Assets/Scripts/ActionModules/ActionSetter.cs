@@ -6,9 +6,9 @@ public class ActionSetter : MonoBehaviour {
 
     public IBaseAction first;
     
-    public IBaseAction current;
+    private IBaseAction current;
 
-    void Start(){
+    protected void Start(){
         enabled = false;
         current = null;
     }
@@ -20,8 +20,9 @@ public class ActionSetter : MonoBehaviour {
         enabled = true;
     }
 
-    void Update(){
-        if(current != null && current.isFinished) {
+    protected void Update(){
+        // con el bucle while podemos correr todas las acciones posibles en el mismo frame, si son demasiadas se puede cambiar con un if
+        while(current != null && current.isFinished) {
             current = current.next;
             if (current == null){
                 enabled = false;

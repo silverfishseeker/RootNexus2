@@ -90,9 +90,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 286beb40e064c3444935d8d3d3297b79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overMouseColor: {r: 0, g: 0, b: 0, a: 0}
   title: 
   description: 
-  ID: 
+  myslot: {fileID: 0}
 --- !u!225 &-8236147561058591616
 CanvasGroup:
   m_ObjectHideFlags: 0

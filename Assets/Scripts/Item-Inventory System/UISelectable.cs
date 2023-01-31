@@ -6,22 +6,33 @@ using UnityEngine.EventSystems;
 
 public abstract class UISelectable : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
     protected Image img;
-    private Color neutralColor;
+    protected Color neutralColor;
     public Color overMouseColor;
 
     protected void Start() {
         img = gameObject.GetComponent<Image>();
         neutralColor = img.color;
+        OverrStart();
     }
 
-    public virtual void OnPointerEnter (PointerEventData eventData) {
-        img.color = overMouseColor;
+    public void OnPointerEnter (PointerEventData eventData) {
+        if (GameStateEngine.isntPaused)
+            OverrOnPointerEnter(eventData);
     }
 
-    public virtual void OnPointerExit (PointerEventData eventData) {
-        img.color = neutralColor;
+    public void OnPointerExit (PointerEventData eventData) {
+        if (GameStateEngine.isntPaused)
+            OverrOnPointerExit (eventData);
     }
 
-    public abstract void OnPointerClick(PointerEventData eventData);
+    public void OnPointerClick(PointerEventData eventData) {
+        if (GameStateEngine.isntPaused)
+            OverrOnPointerClick(eventData);
+    }
+
+    public abstract void OverrStart();
+    public abstract void OverrOnPointerEnter(PointerEventData eventData);
+    public abstract void OverrOnPointerExit (PointerEventData eventData);
+    public abstract void OverrOnPointerClick(PointerEventData eventData);
 
 }
