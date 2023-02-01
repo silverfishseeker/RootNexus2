@@ -89,7 +89,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ef56276bb230034e9368e48e1ddece5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  overMouseColor: {r: 1, g: 1, b: 1, a: 1}
+  overMouseColor: {r: 0.3647059, g: 0.6666667, b: 0.9529412, a: 1}
+  selectedColor: {r: 1, g: 1, b: 1, a: 1}
   slotPos: 0
-  selectedColor: {r: 0.36555114, g: 0.66755986, b: 0.9528302, a: 1}
-  isSelected: 0

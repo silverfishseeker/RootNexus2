@@ -76,23 +76,28 @@ public class ObjetosInventario : MonoBehaviour {
             }
         
         objetos[slotPos] = item;
-        slots[slotPos].item = item.gameObject;
         identificarItem[item.id] = slotPos;
+
+        SlotManager slot = slots[slotPos];
+        GameObject itemGO = item.gameObject;
+        itemGO.transform.SetParent(slot.transform);
+        itemGO.GetComponent<RectTransform>().anchoredPosition = new Vector2(0,0);
+        itemGO.GetComponent<RectTransform>().localScale = new Vector3(1,1,1);
+        itemGO.transform.SetParent(GameStateEngine.gse.oi.transform, true);
+        itemGO.GetComponent<Item>().myslot = slot;
         return true;
     }
-
-    //public bool AddNewByName(string name)=> Add(LoadNew(name, transform));
 
     public Item Remove(int slotPos) {
         Item item = objetos[slotPos];
         identificarItem.Remove(item.id);
         objetos.Remove(slotPos);
-        slots[slotPos].DetachItem();
+        item.transform.SetParent(null);
         return item;
     }
 
     public bool Move(int itemId, int slotPos) {
-        if (slots[slotPos].item != null)
+        if (objetos.ContainsKey(slotPos))
             return false;
         int firstSlotPos = identificarItem[itemId];
         Add(Remove(firstSlotPos), slotPos);
@@ -100,9 +105,6 @@ public class ObjetosInventario : MonoBehaviour {
     }
 
     void Update(){
-        if (Input.GetKeyUp("b")) {
-            //Add(ejemplo);
-        }
         if (Input.GetKeyUp("n")) {
             Save();
         }

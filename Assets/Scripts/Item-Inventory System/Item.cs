@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 
-public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class Item : SelectablePausable, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
     private Canvas canvas; 
     private ObjetosInventario inventario;
