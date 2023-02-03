@@ -45,6 +45,9 @@ TagManager:
   - name: Wall
     uniqueID: 4109274895
     locked: 0
+  - name: Decorations
+    uniqueID: 581524355
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

@@ -1,0 +1,4 @@
+abajo
+arriba
+izquierda
+derecha
