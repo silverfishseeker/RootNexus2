@@ -12,30 +12,35 @@ Esto es así porque c# no te deja herencia múltiple y hace falta variables est�
 Tal vez usar genéricos ayudaría a simplificar esto, yo que sé.
 */
 public class ExclusivityManager {
+    private class SelIns{
+        public bool sel;
+        public IExclSelectable ins;
+        public SelIns(bool sel, IExclSelectable ins){
+            this.sel = sel;
+            this.ins = ins;
+        }
+    }
 
     private class Category{
         public int nextId = 0;
-        public List<bool> seleccionados = new List<bool>();
-        public List<IExclSelectable> instancias = new List<IExclSelectable>();
+        public Dictionary<int,SelIns> dict = new Dictionary<int,SelIns>();
     }
     private static Dictionary<Type,Category> categorias = new Dictionary<Type,Category>();
 
-    public static IExclSelectable Current<T>() {
-        List<bool> sels = categorias[typeof(T)].seleccionados;
-        for (int i = 0; i < sels.Count; i++)
-            if(sels[i])
-                return categorias[typeof(T)].instancias[i];
-        return null;
+    public static T Current<T> () where T : IExclSelectable {
+        Dictionary<int,SelIns> dict = categorias[typeof(T)].dict;
+        foreach (KeyValuePair<int,SelIns> kvp in dict)
+            if(kvp.Value.sel)
+                return (T)kvp.Value.ins;
+        return default(T);
     }
 
 
     private Category categoria;
-    private List<bool> selecs => categoria.seleccionados;
-    private List<IExclSelectable> insts => categoria.instancias;
 
     private int myId;
 
-    public bool isSelected => selecs[myId];
+    public bool isSelected => categoria.dict[myId].sel;
 
     public ExclusivityManager(IExclSelectable ide){
         Type tipo = ide.GetType();
@@ -44,18 +49,21 @@ public class ExclusivityManager {
         categoria = categorias[tipo];
 
         myId = categoria.nextId++;
-        selecs.Add(false);
-        insts.Add(ide);
+        categoria.dict[myId] = new SelIns(false, ide);
     }
 
     public void Select(){
-        selecs[myId] = true;
-        insts[myId].Select();
-        for (int i = 0; i < selecs.Count; i++)
-            if( i != myId && selecs[i] == true){
-                selecs[i] = false;
-                insts[i].Deselect();
+        categoria.dict[myId].sel = true;
+        categoria.dict[myId].ins.Select();
+        foreach (KeyValuePair<int,SelIns> kvp in categoria.dict)
+            if(kvp.Key != myId && kvp.Value.sel == true){
+                categoria.dict[kvp.Key].sel = false;
+                categoria.dict[kvp.Key].ins.Deselect();
             }
+    }
+
+    public void Destroy(){
+        categoria.dict.Remove(myId);
     }
 
 }

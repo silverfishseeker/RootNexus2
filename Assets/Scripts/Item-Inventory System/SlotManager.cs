@@ -56,4 +56,7 @@ public class SlotManager : SelectablePausable, IExclSelectable {
             itemDescrp = "";
         }
     }
+    public void OnDestroy(){
+        selectState.Destroy();
+    }
 }

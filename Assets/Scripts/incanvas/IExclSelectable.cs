@@ -5,4 +5,5 @@ using UnityEngine;
 public interface IExclSelectable {
     void Deselect();
     void Select();
+    void OnDestroy();
 }

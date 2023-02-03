@@ -8,26 +8,47 @@ using System.IO;
 public class DialogueDisplayer : MonoBehaviour {
     public const string NEXT_BUTTOM = "Jump";
 
-    public GameObject textTMP;
 
+    public TextMeshProUGUI tmp;
+    public GameObject opcionDialogo;
+    public RectTransform opcionesTransform;
+    public float desplazamiento;
     private GameObject cloudDialogue;
-    private TextMeshProUGUI tmp;
     private bool isSpeaking;
-
+    private bool isOptions;
+    private Stack<GameObject> opciones = new Stack<GameObject>();
+    [HideInInspector]
+    public IBaseAction chosen;
     private INotificableDialogue notificate;
 
     void Start() {
-        tmp = textTMP.GetComponent<TextMeshProUGUI>();
         isSpeaking = false;
+        isOptions = false;
         cloudDialogue = gameObject.transform.GetChild(0).gameObject;
         cloudDialogue.SetActive(false);
         enabled  = false;
+        chosen = gameObject.AddComponent(typeof(InvalidAction)) as InvalidAction;
     }
     
     void Update() {
-        if (Input.GetButtonUp(NEXT_BUTTOM) && isSpeaking) {
+        DialogueOption doCurr;
+        if (Input.GetButtonUp(NEXT_BUTTOM) && isSpeaking && (!isOptions || 
+                !((
+                    chosen = 
+                        ((doCurr = ExclusivityManager.Current<DialogueOption>()) != null ? 
+                            doCurr.action :
+                            null
+                        )
+                ) is InvalidAction)
+            )) { // Admito que me he pasado un poco en este if
+            // En resumen entramos en el if si el espacio presionado, está hablando y, si estamos en modo opciones, entonces necisitamos una acción escogida correctamente
             cloudDialogue.SetActive(false);
             isSpeaking = false;
+            isOptions = false;
+
+            while(opciones.Count > 0)
+                Destroy(opciones.Pop());
+
             notificate.NotificateMe();
             enabled  = false;
         }
@@ -41,4 +62,19 @@ public class DialogueDisplayer : MonoBehaviour {
         cloudDialogue.SetActive(true);
     }
 
+    public void ShowOptions(string text, List<string> textos, List<IBaseAction> acciones, INotificableDialogue notificate){
+        if (acciones.Count != acciones.Count)
+            throw new ArgumentException("textos y acciones deben de tener la misma longitud");
+        Show(text, notificate);
+        isOptions = true;
+        for(int i = 0; i < textos.Count; i++){
+            GameObject go = Instantiate(opcionDialogo, transform);
+            go.GetComponent<DialogueOption>().SetTextAndAction(textos[i], acciones[i]);
+            go.GetComponent<RectTransform>().anchoredPosition = new Vector2(
+                go.GetComponent<RectTransform>().anchoredPosition.x,
+                go.GetComponent<RectTransform>().anchoredPosition.y+i*desplazamiento);
+            opciones.Push(go);
+        }
+            
+    }
 }

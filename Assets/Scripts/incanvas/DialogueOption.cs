@@ -1,35 +1,55 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
-public class DialogueOption : Selectable, IExclSelectable {
+public class DialogueOption : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IExclSelectable {
 
     private ExclusivityManager selectState;
+    private Image img;
+    private Sprite neutralSprite;
 
-    public override void OverrStart(){
+    public TextMeshProUGUI tmp;
+    public Sprite overMouseSprite;
+    public Sprite selectedSprite;
+    public IBaseAction action;
+
+    protected void Start() {
         selectState = new ExclusivityManager(this);
+        img = gameObject.GetComponent<Image>();
+        neutralSprite = img.sprite;
     }
 
-    public override void OnPointerEnter (PointerEventData eventData){
+    public void SetTextAndAction(string text, IBaseAction action){
+        tmp.text=text;
+        this.action = action;
+    }
+
+    public void OnPointerEnter (PointerEventData eventData){
         if (!selectState.isSelected)
-            img.color = overMouseColor;
+            img.sprite = overMouseSprite;
     }
 
-    public override void OnPointerExit  (PointerEventData eventData){
+    public void OnPointerExit  (PointerEventData eventData){
         if (!selectState.isSelected)
-            img.color = neutralColor;
+            img.sprite = neutralSprite;
     }
 
-    public override void OnPointerClick (PointerEventData eventData){
+    public void OnPointerClick (PointerEventData eventData){
         selectState.Select();
     }
 
     public void Select(){
-        img.color = selectedColor;
+        img.sprite = selectedSprite;
     }
 
     public void Deselect(){
         OnPointerExit(null);
+    }
+
+    public void OnDestroy(){
+        selectState.Destroy();
     }
 }
