@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 
-public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class Item : SelectablePausable, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
     private Canvas canvas; 
     private ObjetosInventario inventario;
@@ -13,49 +13,28 @@ public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandl
 
     public string title;
     public string description;
+
+    public int id { get; private set; }
     
-    [HideInInspector] // para que no se pueda editar a mano
-    public string ID;
 
-    public bool IsEquals(Item o) => o != null && ID == o.ID;
-
-    public override string ToString() => "Item("+ID+", "+title+")";
-
-    public bool IsntID => ID == null || ID == "";
+    public override string ToString() => "Item("+name+", "+title+")";
 
     public SlotManager myslot;
     public static bool dragging;
 
-    public bool GetNewID() {
-        if(IsntID || true){
-            string id = Guid.NewGuid().ToString();
-            if (ItemsMananger.AddNewID(id)) {
-                ID = id;
-                return true;
-            } else
-                return false;
-        } else
-            return false;
+    public Item(){
+        // Establecemos el id en el contructor en vez de en el start porque éste no se ejecuta hasta
+        // que se abre el inventario por primera vez, y necesitamos que tenga id antes de eso para
+        // cargar correctamente el diccionario de ObjetosInventario
+        try{ // Esto da error porque unity pre crea los objetos, pero luego funciona bien en el play
+            id = GameStateEngine.gse.GetNewId();
+        } catch(NullReferenceException) {
+            id = -1; // normalmente nunca deberíamos llegar aquí
+        }
+       
     }
 
-    public void EnsureMyself() {
-        bool notOK = false;
-        string message = "Item "+gameObject.name+" has some problems: ";
-        if (IsntID) {
-            notOK = true;
-            message += "[It didn't get ID inizialitated, use \"Generar ID\" on editor first] ";
-        }
-        if (gameObject.GetComponent<Image>() == null) {
-            notOK = true;
-            message += "[It needs \"Image\" component to work.] ";
-        }
-        if (notOK)
-            throw new InvalidOperationException(message);
-    }
-
-    new void Start(){
-        base.Start();
-        EnsureMyself();
+    public override void OverrStart(){
         canvas = GameStateEngine.gse.canvas;
         inventario = GameStateEngine.gse.oi;
     }
@@ -72,9 +51,13 @@ public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandl
         return go.GetComponent<Item>();
     }
 
+
     // DRAG stuff
 
     public void OnBeginDrag(PointerEventData eventData) {
+        if (!GameStateEngine.isntPaused)
+            return;
+            
         // permite que se puedan seleccionar objetos detrás del item cogido
         gameObject.GetComponent<CanvasGroup>().blocksRaycasts = false;
         originalPosition = transform.position;
@@ -83,6 +66,9 @@ public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandl
     }
 
     public void OnDrag(PointerEventData data) {
+        if (!GameStateEngine.isntPaused)
+            return;
+
         Vector2 pos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             (RectTransform)canvas.transform,
@@ -93,11 +79,13 @@ public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandl
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-		if (SlotManager.lastTouched >= 0 && SlotManager.lastTouched != myslot.slotPos){
-			inventario.Move(ID, SlotManager.lastTouched);
+        if (!GameStateEngine.isntPaused)
+            return;
+            
+		if (SlotManager.lastTouched >= 0 && SlotManager.lastTouched != myslot.slotPos &&
+                inventario.Move(id, SlotManager.lastTouched)){
             myslot.OnPointerClick(eventData);
-        }
-        else
+        }  else
             transform.position = originalPosition;
         gameObject.GetComponent<CanvasGroup>().blocksRaycasts = true;
         dragging = true;
@@ -105,15 +93,15 @@ public class Item : UISelectable, IBeginDragHandler, IDragHandler, IEndDragHandl
 
     
     // seleccionable detrás:
-    public override void OnPointerEnter (PointerEventData eventData) {
+    public override void OverrOnPointerEnter (PointerEventData eventData) {
         myslot.OnPointerEnter(eventData);
     }
 
-    public override void OnPointerExit (PointerEventData eventData) {
-        myslot.OnPointerExit(eventData);
+    public override void OverrOnPointerExit (PointerEventData eventData) {
+        myslot.OverrOnPointerExit(eventData);
     }
     
-    public override void OnPointerClick(PointerEventData eventData){
-        myslot.OnPointerClick(eventData);
+    public override void OverrOnPointerClick(PointerEventData eventData){
+        myslot.OverrOnPointerClick(eventData);
     }
 }

@@ -19,9 +19,8 @@ public class ObjetosInventario : MonoBehaviour {
 
 
     public Dictionary<int,Item> objetos; //slotPos -> item
-    public Dictionary<string, int> identificarItem; // itemid -> slotPos
+    public Dictionary<int, int> identificarItem; // itemId -> slotPos
     private SlotManager[] slots; //slotPos -> slot
-    private ItemsMananger im;
 
     public void CrearMalla() {
         slots = new SlotManager[filas*columnas];
@@ -35,23 +34,24 @@ public class ObjetosInventario : MonoBehaviour {
         }
     }
 
+    private Item LoadNew(string name, Transform trans) => Instantiate(Resources.Load<GameObject>(name), trans).GetComponent<Item>();
+
     public void Load() {
         CrearMalla();
         objetos = new Dictionary<int,Item>();
-        identificarItem = new Dictionary<string, int>();
+        identificarItem = new Dictionary<int, int>();
         if (File.Exists(inventoryFile)) {
             using (StreamReader sr = new StreamReader(inventoryFile)) {
                 string line;
                 while ((line = sr.ReadLine()) != null) {
                     string[] ss = line.Split(FILE_SEP);
-                    Add(im.GetItemById(ss[1]).GetNewMe(), int.Parse(ss[0]));
+                    Add(LoadNew(ss[1], transform), int.Parse(ss[0]));
                 }
             }
         }
     }
 
     public void PreStart(){
-        im = GameStateEngine.gse.im;
         inventoryFile = GameStaticAccess.DataFolder+inventoryFile;
         Load();
     }
@@ -59,7 +59,8 @@ public class ObjetosInventario : MonoBehaviour {
     public void Save() {
         using (StreamWriter sw = new StreamWriter(inventoryFile)) {
             foreach (KeyValuePair<int, Item> kvp in objetos) {
-                sw.WriteLine(kvp.Key + FILE_SEP + kvp.Value.ID);                    
+                string itemName = kvp.Value.gameObject.name.Substring(0, kvp.Value.gameObject.name.Length - 7);
+                sw.WriteLine(kvp.Key + FILE_SEP + itemName);                    
             }
         }
     }
@@ -75,30 +76,35 @@ public class ObjetosInventario : MonoBehaviour {
             }
         
         objetos[slotPos] = item;
-        slots[slotPos].item = item.gameObject;
-        identificarItem[item.ID] = slotPos;
+        identificarItem[item.id] = slotPos;
+
+        SlotManager slot = slots[slotPos];
+        GameObject itemGO = item.gameObject;
+        itemGO.transform.SetParent(slot.transform);
+        itemGO.GetComponent<RectTransform>().anchoredPosition = new Vector2(0,0);
+        itemGO.GetComponent<RectTransform>().localScale = new Vector3(1,1,1);
+        itemGO.transform.SetParent(GameStateEngine.gse.oi.transform, true);
+        itemGO.GetComponent<Item>().myslot = slot;
         return true;
     }
 
     public Item Remove(int slotPos) {
         Item item = objetos[slotPos];
-        identificarItem.Remove(item.ID);
+        identificarItem.Remove(item.id);
         objetos.Remove(slotPos);
-        slots[slotPos].DetachItem();
+        item.transform.SetParent(null);
         return item;
     }
 
-    public void Move(String itemID, int slotPos) {
-        if (slots[slotPos].item != null)
-            throw new ArgumentException("slot "+slotPos+" ya ocupado");
-        int firstSlotPos = identificarItem[itemID];
+    public bool Move(int itemId, int slotPos) {
+        if (objetos.ContainsKey(slotPos))
+            return false;
+        int firstSlotPos = identificarItem[itemId];
         Add(Remove(firstSlotPos), slotPos);
+        return true;
     }
 
     void Update(){
-        if (Input.GetKeyUp("b")) {
-            //Add(ejemplo);
-        }
         if (Input.GetKeyUp("n")) {
             Save();
         }

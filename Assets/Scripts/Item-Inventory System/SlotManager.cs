@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SlotManager : UISelectable {
+public class SlotManager : SelectablePausable, IExclSelectable {
+
+    private ExclusivityManager selectState;
+
     public static int lastTouched = -1;
 
     private string itemTitle{
@@ -15,76 +18,45 @@ public class SlotManager : UISelectable {
         set => GameStateEngine.gse.oi.itemDescrp.text = value;
     }
 
-    public int slotPos;
-    private GameObject itemRef = null;
-    public GameObject item{
-        set {
-            itemRef = value;
-            value.transform.SetParent(transform);
-            value.GetComponent<RectTransform>().anchoredPosition = new Vector2(0,0);
-            value.GetComponent<RectTransform>().localScale = new Vector3(1,1,1);
-            value.transform.SetParent(GameStateEngine.gse.oi.transform, true);
-            value.GetComponent<Item>().myslot = this;
-        }
-        get => itemRef;
+    public int slotPos; // Item lo usa para moverse
+
+    public override void OverrStart(){
+        selectState = new ExclusivityManager(this);
     }
 
-    
-    public Color selectedColor;
-    private static List<UISelectable> instancias;
-    public bool isSelected;
-
-    static SlotManager(){
-        instancias = new List<UISelectable>();
-    }
-
-    new void Start(){
-        base.Start();
-        isSelected = false;
-        instancias.Add(this); // por algún motivo se añaden los objetos mal si esta línea se hace en el constructor, así que la dejamos en Start
-    }
-
-    public void DetachItem() {
-        itemRef.transform.SetParent(null);
-        itemRef = null;
-    }
-
-    public override void OnPointerEnter (PointerEventData eventData) {
-        if (!isSelected) {
-            base.OnPointerEnter(eventData);
-        }
+    public override void OverrOnPointerEnter (PointerEventData eventData) {
+        if (!selectState.isSelected)
+            img.color = overMouseColor;
         lastTouched = slotPos;
-            
     }
     
-    public override void OnPointerExit (PointerEventData eventData) {
-        if (!isSelected)
-            base.OnPointerExit(eventData);
+    public override void OverrOnPointerExit (PointerEventData eventData) {
+        if (!selectState.isSelected)
+            img.color = neutralColor;
         lastTouched = -1;
     }
 
-    private void Deselect(PointerEventData eventData) {
-        isSelected = false;
-        base.OnPointerExit(eventData);
+    public override void OverrOnPointerClick(PointerEventData eventData){
+        selectState.Select();
     }
 
-    public override void OnPointerClick(PointerEventData eventData){
-        foreach(SlotManager sm in instancias) {
-            if (this != sm)
-                sm.Deselect(eventData);
-        }
-        isSelected = true;
+    public void Deselect() {
+        base.OnPointerExit(null);
+    }
+    public void Select() {
         img.color = selectedColor;
 
-        if(item == null) {
-            itemTitle = "";
-            itemDescrp = "";
-        } else {
-            Item it = item.GetComponent<Item>();
+        Dictionary<int,Item> objs = GameStateEngine.gse.oi.objetos;
+        if (objs.ContainsKey(slotPos)){
+            Item it = objs[slotPos].GetComponent<Item>();
             itemTitle = it.title;
             itemDescrp = it.description;
+        } else{
+            itemTitle = "";
+            itemDescrp = "";
         }
     }
-
-    
+    public void OnDestroy(){
+        selectState.Destroy();
+    }
 }

@@ -65,10 +65,8 @@ public class PlayerMovement : MonoBehaviour {
         costeHorizontal = costeAndarFps;
     }
 
-    // Update is called once per frame
-    void Update() {
-        if (GameStateEngine.isPaused)
-            return;
+    // Se pausa en GameStateEngine
+    void Update() {        
 
         rb.drag = isTouchingWall ? rozamientoSuelo : rozamientoAire;
 
