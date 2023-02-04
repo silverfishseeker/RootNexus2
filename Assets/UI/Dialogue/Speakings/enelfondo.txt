@@ -1,5 +1,0 @@
-<align="center">Muy bien hecho llegaste al fondo del agujero.
-/
-<align="center">¿Y ahora qué?
-/
-<align="center">[...]
