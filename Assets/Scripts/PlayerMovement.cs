@@ -23,7 +23,7 @@ public class PlayerMovement : MonoBehaviour {
     public float costeCorrerFps;
     public float costeSalto;
     public float costeParedFps;
-    public float costeBaseExpCaida;
+    public float costeExpCaida;
     public float costeCoefCaida;
 
     // Colliders
@@ -38,6 +38,7 @@ public class PlayerMovement : MonoBehaviour {
     public bool onRightWall => rightWallCollider.IsTouching(wall);
     public bool onDowntWall => groundCollider.IsTouching(wall);
     private bool wasOnDowntWall;
+    private Vector2 lastVelocity;
     public bool isGrabingWall;
 
     // Accesos a comopones propios
@@ -71,11 +72,10 @@ public class PlayerMovement : MonoBehaviour {
         rb.drag = isTouchingWall ? rozamientoSuelo : rozamientoAire;
 
         // Daño de caída
-        if (onDowntWall && !wasOnDowntWall) {
-            float f = ((float)Math.Pow(costeBaseExpCaida, rb.velocity.y*rb.velocity.y)-1f)*costeCoefCaida;
-            health.Add(-f);
-        }
+        if (onDowntWall && !wasOnDowntWall)
+            health.Add(-((float)Math.Pow(Math.Abs(lastVelocity.y), costeExpCaida))*costeCoefCaida);
         wasOnDowntWall = onDowntWall;
+        lastVelocity = rb.velocity;
 
         Vector2 stepForce = new Vector2(0,0);
         
