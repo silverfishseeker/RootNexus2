@@ -66,7 +66,8 @@ public class HealthBarController : MonoBehaviour {
 
     void Update() {
         //regeneration
-        Add(currRegen);
+        if (GameStateEngine.isntPaused)
+            Add(currRegen);
 
         float f = SigmoidInOO(-currIncr);
         GetComponent<Image>().color = new Color(f,f,f,1) * diffColor + baseColor;
