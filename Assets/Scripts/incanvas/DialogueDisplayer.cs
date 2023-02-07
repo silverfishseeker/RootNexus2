@@ -11,7 +11,6 @@ public class DialogueDisplayer : MonoBehaviour {
 
     public TextMeshProUGUI tmp;
     public GameObject opcionDialogo;
-    public RectTransform opcionesTransform;
     public float desplazamiento;
     private GameObject cloudDialogue;
     private bool isSpeaking;
@@ -19,6 +18,7 @@ public class DialogueDisplayer : MonoBehaviour {
     private Stack<GameObject> opciones = new Stack<GameObject>();
     [HideInInspector]
     public IBaseAction chosen;
+    public IBaseAction invalidReference;
     private INotificableDialogue notificate;
 
     void Start() {
@@ -27,19 +27,19 @@ public class DialogueDisplayer : MonoBehaviour {
         cloudDialogue = gameObject.transform.GetChild(0).gameObject;
         cloudDialogue.SetActive(false);
         enabled  = false;
-        chosen = gameObject.AddComponent(typeof(InvalidAction)) as InvalidAction;
+        chosen = invalidReference;
     }
     
     void Update() {
         DialogueOption doCurr;
         if (Input.GetButtonUp(NEXT_BUTTOM) && isSpeaking && (!isOptions || 
-                !((
+                ((
                     chosen = 
                         ((doCurr = ExclusivityManager.Current<DialogueOption>()) != null ? 
                             doCurr.action :
-                            null
+                            invalidReference
                         )
-                ) is InvalidAction)
+                ) != invalidReference)
             )) { // Admito que me he pasado un poco en este if
             // En resumen entramos en el if si el espacio presionado, está hablando y, si estamos en modo opciones, entonces necisitamos una acción escogida correctamente
             cloudDialogue.SetActive(false);
@@ -51,6 +51,7 @@ public class DialogueDisplayer : MonoBehaviour {
 
             notificate.NotificateMe();
             enabled  = false;
+            chosen = invalidReference;
         }
     }
 
