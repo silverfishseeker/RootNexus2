@@ -25,7 +25,7 @@ public class HealthBarController : MonoBehaviour {
     private RectTransform rt;
 
     void Start()  {
-        rt = gameObject.GetComponent<RectTransform>();
+        rt = GetComponent<RectTransform>();
         inicialWidth = rt.localScale.x;
         Reset();
     }

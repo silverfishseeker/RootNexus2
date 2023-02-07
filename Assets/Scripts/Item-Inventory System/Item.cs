@@ -59,7 +59,7 @@ public class Item : SelectablePausable, IBeginDragHandler, IDragHandler, IEndDra
             return;
             
         // permite que se puedan seleccionar objetos detrás del item cogido
-        gameObject.GetComponent<CanvasGroup>().blocksRaycasts = false;
+        GetComponent<CanvasGroup>().blocksRaycasts = false;
         originalPosition = transform.position;
         dragging = true;
         OnPointerClick(eventData);
@@ -87,7 +87,7 @@ public class Item : SelectablePausable, IBeginDragHandler, IDragHandler, IEndDra
             myslot.OnPointerClick(eventData);
         }  else
             transform.position = originalPosition;
-        gameObject.GetComponent<CanvasGroup>().blocksRaycasts = true;
+        GetComponent<CanvasGroup>().blocksRaycasts = true;
         dragging = true;
 	}
 

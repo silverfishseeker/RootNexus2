@@ -55,8 +55,8 @@ public class PlayerMovement : MonoBehaviour {
         leftWallCollider = Instantiate(rightWallCollider, transform);
         leftWallCollider.offset = new Vector2(-leftWallCollider.offset.x, leftWallCollider.offset.y);
 
-        sr = gameObject.GetComponent<SpriteRenderer>();
-        rb = gameObject.GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
         gForce = rb.gravityScale;
         // Para que lo siguiente funcione es imprescindible que GameStateEngine se ejecute primero. esto se logra en Script Execution Order
         health  = GameStateEngine.gse.hbc;
