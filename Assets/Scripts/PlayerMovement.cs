@@ -27,16 +27,16 @@ public class PlayerMovement : MonoBehaviour {
     public float costeCoefCaida;
 
     // Colliders
-    public Collider2D wall;
+    public LayerMask maskWall;
     public Collider2D groundCollider;
     public Collider2D rightWallCollider;
     private Collider2D leftWallCollider; // copia del right
 
     // Estados de tocamientos
-    public bool isTouchingWall => gameObject.GetComponent<Collider2D>().IsTouching(wall); // si el collider original del objeto está tocando el wall
-    public bool onLeftWall => leftWallCollider.IsTouching(wall);
-    public bool onRightWall => rightWallCollider.IsTouching(wall);
-    public bool onDowntWall => groundCollider.IsTouching(wall);
+    public bool isTouchingWall => gameObject.GetComponent<Collider2D>().IsTouchingLayers(maskWall); // si el collider original del objeto está tocando el wall
+    public bool onLeftWall => leftWallCollider.IsTouchingLayers(maskWall);
+    public bool onRightWall => rightWallCollider.IsTouchingLayers(maskWall);
+    public bool onDowntWall => groundCollider.IsTouchingLayers(maskWall);
     private bool wasOnDowntWall;
     private Vector2 lastVelocity;
     public bool isGrabingWall;
