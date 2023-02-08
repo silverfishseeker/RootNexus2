@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviour {
     private Collider2D leftWallCollider; // copia del right
 
     // Estados de tocamientos
-    public bool isTouchingWall => gameObject.GetComponent<Collider2D>().IsTouchingLayers(maskWall); // si el collider original del objeto está tocando el wall
+    public bool isTouchingWall => GetComponent<Collider2D>().IsTouchingLayers(maskWall); // si el collider original del objeto está tocando el wall
     public bool onLeftWall => leftWallCollider.IsTouchingLayers(maskWall);
     public bool onRightWall => rightWallCollider.IsTouchingLayers(maskWall);
     public bool onDowntWall => groundCollider.IsTouchingLayers(maskWall);
@@ -41,11 +41,18 @@ public class PlayerMovement : MonoBehaviour {
     private Vector2 lastVelocity;
     public bool isGrabingWall;
 
+    // Parámetros animación
+    public float animationXSpeedCoef;
+    public float animationYSpeedCoef;
+    public float animationTresholdBaseExp;
+    public float animationTresholdCoef;
+
     // Accesos a comopones propios
     private Rigidbody2D rb;
     private float gForce; // no hay gravedad agarrado a una pared
     private SpriteRenderer sr;
     private HealthBarController health;
+    private Animator animator;
 
     private float timeTorce { get { return fuerza*Time.deltaTime; } }
 
@@ -57,6 +64,7 @@ public class PlayerMovement : MonoBehaviour {
 
         sr = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         gForce = rb.gravityScale;
         // Para que lo siguiente funcione es imprescindible que GameStateEngine se ejecute primero. esto se logra en Script Execution Order
         health  = GameStateEngine.gse.hbc;
@@ -128,15 +136,26 @@ public class PlayerMovement : MonoBehaviour {
         
         // Andar
         if (inputHorizontal != 0) {
+            sr.flipX = inputHorizontal<0;
             stepForce += new Vector2(timeTorce*inputHorizontal, 0);
             health.AddDelta(-costeHorizontal);
         }
 
         rb.AddForce(stepForce);
 
-        // BORRAR
-        if (Input.GetKey("q")) {
-            gameObject.transform.position = new Vector3(startx, starty, 0);
-        }
+        // Animación
+
+        if (isGrabingWall){
+            animator.speed = (float)Math.Abs(rb.velocity.y) * animationYSpeedCoef;
+            Debug.Log($"{rb.velocity.y} {animator.speed}");
+        } else if (rb.velocity.x != 0)
+            animator.speed = (float)Math.Abs(rb.velocity.x) * animationXSpeedCoef;
+        else
+            animator.speed = 1;
+
+        animator.SetFloat("xVelocity", 
+            (float) (1 - Math.Pow(animationTresholdBaseExp, -Math.Abs(rb.velocity.x*animationTresholdCoef)))
+        );
+        animator.SetBool("isClimbing", isGrabingWall);
     }
 }
