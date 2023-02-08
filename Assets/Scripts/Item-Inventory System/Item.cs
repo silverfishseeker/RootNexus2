@@ -22,16 +22,10 @@ public class Item : SelectablePausable, IBeginDragHandler, IDragHandler, IEndDra
     public SlotManager myslot;
     public static bool dragging;
 
+    private static int nextId = 0;
+
     public Item(){
-        // Establecemos el id en el contructor en vez de en el start porque éste no se ejecuta hasta
-        // que se abre el inventario por primera vez, y necesitamos que tenga id antes de eso para
-        // cargar correctamente el diccionario de ObjetosInventario
-        try{ // Esto da error porque unity pre crea los objetos, pero luego funciona bien en el play
-            id = GameStateEngine.gse.GetNewId();
-        } catch(NullReferenceException) {
-            id = -1; // normalmente nunca deberíamos llegar aquí
-        }
-       
+        id = nextId++;
     }
 
     public override void OverrStart(){

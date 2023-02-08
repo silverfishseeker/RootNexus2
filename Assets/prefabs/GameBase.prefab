@@ -259,6 +259,10 @@ MonoBehaviour:
   groundCollider: {fileID: 1180539256264819637}
   rightWallCollider: {fileID: 1180539255753737268}
   isGrabingWall: 0
+  animationXSpeedCoef: 0
+  animationYSpeedCoef: 0
+  animationTresholdBaseExp: 0
+  animationTresholdCoef: 0
 --- !u!50 &1180539254670517774
 Rigidbody2D:
   serializedVersion: 4
@@ -814,7 +818,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4ed278c404ffb64ca79b48bebca1165, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ass: {fileID: 0}
   gameOverImage: {fileID: 1180539256180206872}
   hbc: {fileID: 1180539256600909035}
   dd: {fileID: 1180539255843830348}
@@ -822,7 +825,6 @@ MonoBehaviour:
   inventario: {fileID: 1180539256608432912}
   oi: {fileID: 1180539256162932260}
   avatar: {fileID: 1180539254670517770}
-  nextId: 0
 --- !u!1 &1180539255650575396
 GameObject:
   m_ObjectHideFlags: 0
