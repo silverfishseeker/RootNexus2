@@ -145,10 +145,9 @@ public class PlayerMovement : MonoBehaviour {
 
         // Animación
 
-        if (isGrabingWall){
+        if (isGrabingWall)
             animator.speed = (float)Math.Abs(rb.velocity.y) * animationYSpeedCoef;
-            Debug.Log($"{rb.velocity.y} {animator.speed}");
-        } else if (rb.velocity.x != 0)
+        else if (rb.velocity.x != 0)
             animator.speed = (float)Math.Abs(rb.velocity.x) * animationXSpeedCoef;
         else
             animator.speed = 1;
