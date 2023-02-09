@@ -167,8 +167,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   max: 10000
   current: 0
-  coeficiente: 1
+  coeficienteContinuo: 1
+  coeficienteGolpe: 50
   regeneration: 1
+  maxColor: {r: 0.8392157, g: 0.06666667, b: 0.043137256, a: 1}
+  coeficienteCambioColor: 1
+  desplazamientoCambioColor: 0.5
+  duracionColor: 0.99
 --- !u!1 &1180539254582840729
 GameObject:
   m_ObjectHideFlags: 0
@@ -419,9 +424,7 @@ MonoBehaviour:
   rozamientoAire: 0.01
   jumpBufferMax: 3
   jumpBufferCoef: 1.002
-  redTimeCoef: 100
-  redTimeDecrement: 1
-  redSpeedCoef: 0.7
+  redSpeedCoef: 0.9
   costeAndarFps: 1
   costeCorrerFps: 3
   costeSalto: 10
@@ -2186,13 +2189,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   max: 40
   coeficiente: 1
-  regeneration: 0.01
+  regeneration: 0.02
   curr: 0
-  baseColor: {r: 0.1764706, g: 0.8980392, b: 0.11372549, a: 1}
-  maxColor: {r: 0.8392157, g: 0.06666667, b: 0.043137256, a: 1}
-  coeficienteCambioColor: 1
-  desplazamientoCambioColor: 0.5
-  duracionColor: 0.99
+  bhb: {fileID: 780718172}
 --- !u!212 &2616639653786930488
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2235,7 +2234,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 8652b790379d8a247a338c53cec2f43d, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.5283019, b: 0.084956855, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

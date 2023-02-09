@@ -47,7 +47,6 @@ public class BigHealthBar : MonoBehaviour {
         healthBarImage.fillAmount = current/max; // 0,1
 
         //color
-        
         f = -( // función sigmoide
             (1f / (1f+(float)Math.Exp(
                 coeficienteCambioColor*(desplazamientoCambioColor-currIncr)
