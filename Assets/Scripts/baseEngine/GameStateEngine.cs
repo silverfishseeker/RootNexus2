@@ -8,6 +8,7 @@ public class GameStateEngine : MonoBehaviour {
     public GameObject gameOverImage;
     //public GameObject healthBar;
     public HealthBarController hbc;
+    public BigHealthBar bhb;
     public DialogueDisplayer dd;
     public Canvas canvas;
     public GameObject inventario;
@@ -86,12 +87,14 @@ public class GameStateEngine : MonoBehaviour {
     public static void AbrirInventario(){
         isntInventory = false;
         gse.inventario.SetActive(true);
+        gse.bhb.IncreaseRegeneration();
         GeneralPause();
     }
     
     public static void CerrarInventario(){
         isntInventory = true;
         gse.inventario.SetActive(false);
+        gse.bhb.DecreaseRegeneration();
         GeneralResume();
     }
 
