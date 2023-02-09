@@ -16,6 +16,11 @@ public class PlayerMovement : MonoBehaviour {
     public float coeficienteSaltoImpulsoLateralPared; // El salto desde una pared te desprende de ella
     public float rozamientoSuelo; // mientras toque a a wall
     public float rozamientoAire;
+    
+    // Propiedades de físicas
+    private float jumpBuffer = 1;
+    public float jumpBufferMax;
+    public float jumpBufferCoef;
 
     // Costes de energía
     private float costeHorizontal;
@@ -120,18 +125,23 @@ public class PlayerMovement : MonoBehaviour {
         }
         
         // Saltar
-        if (Input.GetButtonDown("Jump") && isTouchingWall) {
-            // BUG: si se pulsa la tecla lo suficiente rápido (como en 1 o 2 frames) se puede realizar doble salto, pero es demasiado difícil para un humano
-            // esto es culpa de que isTouchingWall permanece activo por demasiado tiempo tras saltar
-            if (onDowntWall) {
-                stepForce += new Vector2(fuerzaSaltoImpulsoLateral*inputHorizontal, fuerzaSalto);
-                health.Add(-costeSalto);
-            } else if (isGrabingWall) {
-                stepForce += new Vector2(
-                    -fuerzaSaltoImpulsoLateral*coeficienteSaltoImpulsoLateralPared*inputHorizontal,
-                    fuerzaSalto*coeficienteSaltoPared);
-                health.Add(-costeSalto);
+        if(isTouchingWall){
+            if (Input.GetButton("Jump")){
+                if (jumpBuffer < jumpBufferMax)
+                    jumpBuffer *= jumpBufferCoef;
+                inputHorizontal = 0; // Para que esto tenga sentido andar debe de calcularse luego
+
+            }else if (Input.GetButtonUp("Jump")){
+                if (onDowntWall) {
+                    stepForce += new Vector2(fuerzaSaltoImpulsoLateral*inputHorizontal, fuerzaSalto*jumpBuffer);
+                    health.Add(-costeSalto);
+                } else if (isGrabingWall) {
+                    stepForce += new Vector2(0, fuerzaSalto*coeficienteSaltoPared);
+                    health.Add(-costeSalto);
+                }
+                jumpBuffer = 1;
             }
+
         }
         
         // Andar
@@ -144,7 +154,6 @@ public class PlayerMovement : MonoBehaviour {
         rb.AddForce(stepForce);
 
         // Animación
-
         if (isGrabingWall)
             animator.speed = (float)Math.Abs(rb.velocity.y) * animationYSpeedCoef;
         else if (rb.velocity.x != 0)

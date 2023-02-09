@@ -241,12 +241,14 @@ MonoBehaviour:
   starty: -2
   fuerzaAndar: 300
   fuerzaCarrera: 450
-  fuerzaSalto: 170
+  fuerzaSalto: 100
   fuerzaSaltoImpulsoLateral: 60
   coeficienteSaltoPared: 1
   coeficienteSaltoImpulsoLateralPared: 4
   rozamientoSuelo: 0.6
   rozamientoAire: 0.01
+  jumpBufferMax: 3
+  jumpBufferCoef: 1.002
   costeAndarFps: 1
   costeCorrerFps: 3
   costeSalto: 10
@@ -259,10 +261,10 @@ MonoBehaviour:
   groundCollider: {fileID: 1180539256264819637}
   rightWallCollider: {fileID: 1180539255753737268}
   isGrabingWall: 0
-  animationXSpeedCoef: 0
-  animationYSpeedCoef: 0
-  animationTresholdBaseExp: 0
-  animationTresholdCoef: 0
+  animationXSpeedCoef: 0.5
+  animationYSpeedCoef: 2
+  animationTresholdBaseExp: 1.5
+  animationTresholdCoef: 0.5
 --- !u!50 &1180539254670517774
 Rigidbody2D:
   serializedVersion: 4
