@@ -22,12 +22,8 @@ public class PlayerMovement : MonoBehaviour {
     private float jumpBuffer = 1;
     public float jumpBufferMax; //0+, inf
     public float jumpBufferCoef; //1+, inf
-    public float redTimeCoef; // 0+, inf
-    public float redTimeDecrement; // 0+,inf
-    private float redTime = 0;
     public float redSpeedCoef; // 0+, 1
-    private bool wasRed;
-
+    private bool isntCansado;//
     // Costes de energía
     private float costeHorizontal;
     public float costeAndarFps;
@@ -83,6 +79,19 @@ public class PlayerMovement : MonoBehaviour {
 
         fuerza = fuerzaAndar;
         costeHorizontal = costeAndarFps;
+        Descansar();
+    }
+
+    public void Cansar(){
+        isntCansado = false;
+        animator.SetBool("isRed", true);
+        generalForce *= redSpeedCoef;
+    }
+
+    public void Descansar(){
+        isntCansado = true;
+        animator.SetBool("isRed", false);
+        generalForce = 1;
     }
 
     // Se pausa en GameStateEngine
@@ -94,23 +103,9 @@ public class PlayerMovement : MonoBehaviour {
         if (onDowntWall && !wasOnDowntWall){
             float fallDamage = ((float)Math.Pow(Math.Abs(lastVelocity.y), costeExpCaida))*costeCoefCaida;
             health.Add(-fallDamage);
-            //Ralentización por hostiarse
-            redTime = fallDamage*redTimeCoef;
-            animator.SetBool("isRed", true);
-            generalForce *= redSpeedCoef;
-            wasRed = true;
         }
         wasOnDowntWall = onDowntWall;
         lastVelocity = rb.velocity;
-
-        // Quitarse lo rojo
-        if ( redTime > 0){
-            redTime -= redTimeDecrement;
-        } else if (wasRed){
-            wasRed = false;
-            animator.SetBool("isRed", false);
-            generalForce = 1;
-        }
 
 
         Vector2 stepForce = new Vector2(0,0);
@@ -119,7 +114,7 @@ public class PlayerMovement : MonoBehaviour {
         float inputVertical = Input.GetAxis("Vertical");
 
         // Escalar
-        if ((inputHorizontal>0 && onRightWall)  ||  (inputHorizontal<0 && onLeftWall)) {
+        if (((inputHorizontal>0 && onRightWall)  ||  (inputHorizontal<0 && onLeftWall))  && isntCansado) {
             isGrabingWall = true;
             // Apagamos la grabedad para poder quedarnos quietos en una pared
             rb.gravityScale = 0;
@@ -154,7 +149,7 @@ public class PlayerMovement : MonoBehaviour {
                     jumpBuffer *= jumpBufferCoef;
                 inputHorizontal = 0; // Para que esto tenga sentido andar debe de calcularse luego
 
-            }else if (Input.GetButtonUp("Jump")){
+            }else if (Input.GetButtonUp("Jump") && isntCansado){
                 if (onDowntWall) {
                     stepForce += new Vector2(fuerzaSaltoImpulsoLateral*inputHorizontal, fuerzaSalto*jumpBuffer);
                     health.Add(-costeSalto);
