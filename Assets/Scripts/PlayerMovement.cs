@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour {
     public float startx, starty;
 
     // Fuerzas de movimiento
+    private float generalForce=1;//afecta a todas las demás
     private float fuerza; // fuerza base de desplazamiento (vertical y horizontal)
     public float fuerzaAndar; // también escalar
     public float fuerzaCarrera;
@@ -19,8 +20,13 @@ public class PlayerMovement : MonoBehaviour {
     
     // Propiedades de físicas
     private float jumpBuffer = 1;
-    public float jumpBufferMax;
-    public float jumpBufferCoef;
+    public float jumpBufferMax; //0+, inf
+    public float jumpBufferCoef; //1+, inf
+    public float redTimeCoef; // 0+, inf
+    public float redTimeDecrement; // 0+,inf
+    private float redTime = 0;
+    public float redSpeedCoef; // 0+, 1
+    private bool wasRed;
 
     // Costes de energía
     private float costeHorizontal;
@@ -85,10 +91,27 @@ public class PlayerMovement : MonoBehaviour {
         rb.drag = isTouchingWall ? rozamientoSuelo : rozamientoAire;
 
         // Daño de caída
-        if (onDowntWall && !wasOnDowntWall)
-            health.Add(-((float)Math.Pow(Math.Abs(lastVelocity.y), costeExpCaida))*costeCoefCaida);
+        if (onDowntWall && !wasOnDowntWall){
+            float fallDamage = ((float)Math.Pow(Math.Abs(lastVelocity.y), costeExpCaida))*costeCoefCaida;
+            health.Add(-fallDamage);
+            //Ralentización por hostiarse
+            redTime = fallDamage*redTimeCoef;
+            animator.SetBool("isRed", true);
+            generalForce *= redSpeedCoef;
+            wasRed = true;
+        }
         wasOnDowntWall = onDowntWall;
         lastVelocity = rb.velocity;
+
+        // Quitarse lo rojo
+        if ( redTime > 0){
+            redTime -= redTimeDecrement;
+        } else if (wasRed){
+            wasRed = false;
+            animator.SetBool("isRed", false);
+            generalForce = 1;
+        }
+
 
         Vector2 stepForce = new Vector2(0,0);
         
@@ -151,7 +174,7 @@ public class PlayerMovement : MonoBehaviour {
             health.AddDelta(-costeHorizontal);
         }
 
-        rb.AddForce(stepForce);
+        rb.AddForce(stepForce*generalForce);
 
         // Animación
         if (isGrabingWall)
