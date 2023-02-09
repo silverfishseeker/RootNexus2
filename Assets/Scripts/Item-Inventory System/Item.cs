@@ -15,7 +15,9 @@ public class Item : SelectablePausable, IBeginDragHandler, IDragHandler, IEndDra
     public string description;
 
     public int id { get; private set; }
-    
+    public string itemName => gameObject.name.EndsWith("(Clone)") ?
+        gameObject.name.Substring(0, gameObject.name.Length - 7) :
+        gameObject.name; // quitar el "(Clone)"
 
     public override string ToString() => "Item("+name+", "+title+")";
 
@@ -27,6 +29,10 @@ public class Item : SelectablePausable, IBeginDragHandler, IDragHandler, IEndDra
     public Item(){
         id = nextId++;
     }
+
+    public override bool Equals(object obj) => obj != null && GetType() == obj.GetType() && (obj as Item).itemName == itemName;
+    
+    public override int GetHashCode() => itemName.GetHashCode();    
 
     public override void OverrStart(){
         canvas = GameStateEngine.gse.canvas;
@@ -42,7 +48,9 @@ public class Item : SelectablePausable, IBeginDragHandler, IDragHandler, IEndDra
     public Item GetNewMe(Transform parent = null, Vector2 position = new Vector2()) {
         GameObject go = Instantiate(gameObject, new Vector3(), new Quaternion(), parent);
         go.GetComponent<RectTransform>().anchoredPosition = position;
-        return go.GetComponent<Item>();
+        Item it =  go.GetComponent<Item>();
+        it.id = id;
+        return it;
     }
 
 
