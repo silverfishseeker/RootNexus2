@@ -5,23 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class GameStateEngine : MonoBehaviour {
 
-    public ActionSetter ass; // Temporal
-
-
     public GameObject gameOverImage;
     //public GameObject healthBar;
     public HealthBarController hbc;
+    public BigHealthBar bhb;
     public DialogueDisplayer dd;
     public Canvas canvas;
     public GameObject inventario;
     public ObjetosInventario oi;
-
-    /*CUIDADO la referencia de avatar se instancia dentro de su 
-    propio controlador y no en esta clase. Además Avatar no forma
-    parte de GameBase. Eso quiere decir que el objeto puede
-    dejar de exsistir y que de un error cuando se intente acceder
-    a este atributo. Esto puede ser una fuente de posibles bugs.
-    Mirar si en un futuro hay que meter Avatar en GameBase*/
     public GameObject avatar;
     
     public static bool isntPaused;
@@ -30,10 +21,8 @@ public class GameStateEngine : MonoBehaviour {
 
     public static GameStateEngine gse;
 
-    void LoadGame() {
-        oi.PreStart();
-        Resume();
-    }
+    private static bool justLoaded;
+    private static string idEntrada;
 
     void Start() {
         // singleton
@@ -42,25 +31,30 @@ public class GameStateEngine : MonoBehaviour {
         } else {
             gse = this;
             DontDestroyOnLoad(gse);
-            LoadGame();
+            oi.PreStart();
+            Resume();
         }
         gse.gameOverImage.SetActive(false);
         CerrarInventario();
     }
-
-    public int nextId = 0;
-    public int GetNewId() => nextId++;
 
     public static void GameOver() {
         Pause();
         gse.gameOverImage.SetActive(true);
     }
 
+    public static void LoadScene(string nombreEscena, string entrada = ""){
+        idEntrada = entrada;
+        SceneManager.LoadScene(nombreEscena);
+        justLoaded = true;
+        gse.enabled = true;
+        Resume();
+    }
+
     public static void Reload() {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         gse.hbc.Reset();
         gse.gameOverImage.SetActive(false);
-        Resume();
+        LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public static void ShutDown() {
@@ -93,29 +87,49 @@ public class GameStateEngine : MonoBehaviour {
     public static void AbrirInventario(){
         isntInventory = false;
         gse.inventario.SetActive(true);
-        gse.hbc.IncreaseRegeneration();
+        gse.bhb.IncreaseRegeneration();
         GeneralPause();
     }
     
     public static void CerrarInventario(){
         isntInventory = true;
         gse.inventario.SetActive(false);
-        gse.hbc.DecreaseRegeneration();
+        gse.bhb.DecreaseRegeneration();
         GeneralResume();
     }
 
     void Update() {
-        if (Input.GetKeyUp("l")) {
+        if (justLoaded){
+            //enabled = false //descomentar en versión final
+            justLoaded = false;
+
+            GameObject[] entradas = GameObject.FindGameObjectsWithTag("entrada");
+
+            if(idEntrada == "")
+                gse.avatar.transform.position = new Vector2(0,0);
+            else {
+                bool isAny = false;
+                foreach (GameObject go in entradas){
+                    EntradaDeNivel edn = go.GetComponent<EntradaDeNivel>();
+                    if(edn.nombre == idEntrada){
+                        gse.avatar.transform.position = edn.GetComponent<Transform>().position; 
+                        gse.avatar.GetComponent<SpriteRenderer>().flipX = edn.facingLeft;
+                        isAny = true;
+                        break;
+                    }
+                }
+                if( !isAny)
+                    Debug.LogError("No existe una entrada con el id especificado");
+            }
+        }
+        if (Input.GetKeyUp("l")) {//descomentar arriba al borrar
+                Debug.Log(SceneManager.GetActiveScene().name);
             if (isntPaused) Pause();
             else Resume();
         }
         if (isntPaused && Input.GetKeyUp("e")) {
             if (isntInventory) AbrirInventario();
             else CerrarInventario();
-        }
-        
-        if (Input.GetKeyUp("z")) { // Temporal
-            ass.Run();
         }
     }
 }

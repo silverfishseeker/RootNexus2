@@ -18,7 +18,7 @@ public class DialogueOption : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     protected void Start() {
         selectState = new ExclusivityManager(this);
-        img = gameObject.GetComponent<Image>();
+        img = GetComponent<Image>();
         neutralSprite = img.sprite;
     }
 

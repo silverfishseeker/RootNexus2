@@ -58,10 +58,8 @@ public class ObjetosInventario : MonoBehaviour {
 
     public void Save() {
         using (StreamWriter sw = new StreamWriter(inventoryFile)) {
-            foreach (KeyValuePair<int, Item> kvp in objetos) {
-                string itemName = kvp.Value.gameObject.name.Substring(0, kvp.Value.gameObject.name.Length - 7);
-                sw.WriteLine(kvp.Key + FILE_SEP + itemName);                    
-            }
+            foreach (KeyValuePair<int, Item> kvp in objetos)
+                sw.WriteLine(kvp.Key + FILE_SEP + kvp.Value.itemName);
         }
     }
 
@@ -94,6 +92,13 @@ public class ObjetosInventario : MonoBehaviour {
         objetos.Remove(slotPos);
         item.transform.SetParent(null);
         return item;
+    }
+
+    public Item Remove(Item item){
+        foreach(KeyValuePair<int,Item> kvp in objetos)
+            if(item.Equals(kvp.Value))
+                return Remove(kvp.Key);
+        return null;
     }
 
     public bool Move(int itemId, int slotPos) {

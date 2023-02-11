@@ -15,24 +15,24 @@ public class Item : SelectablePausable, IBeginDragHandler, IDragHandler, IEndDra
     public string description;
 
     public int id { get; private set; }
-    
+    public string itemName => gameObject.name.EndsWith("(Clone)") ?
+        gameObject.name.Substring(0, gameObject.name.Length - 7) :
+        gameObject.name; // quitar el "(Clone)"
 
     public override string ToString() => "Item("+name+", "+title+")";
 
     public SlotManager myslot;
     public static bool dragging;
 
+    private static int nextId = 0;
+
     public Item(){
-        // Establecemos el id en el contructor en vez de en el start porque éste no se ejecuta hasta
-        // que se abre el inventario por primera vez, y necesitamos que tenga id antes de eso para
-        // cargar correctamente el diccionario de ObjetosInventario
-        try{ // Esto da error porque unity pre crea los objetos, pero luego funciona bien en el play
-            id = GameStateEngine.gse.GetNewId();
-        } catch(NullReferenceException) {
-            id = -1; // normalmente nunca deberíamos llegar aquí
-        }
-       
+        id = nextId++;
     }
+
+    public override bool Equals(object obj) => obj != null && GetType() == obj.GetType() && (obj as Item).itemName == itemName;
+    
+    public override int GetHashCode() => itemName.GetHashCode();    
 
     public override void OverrStart(){
         canvas = GameStateEngine.gse.canvas;
@@ -48,7 +48,9 @@ public class Item : SelectablePausable, IBeginDragHandler, IDragHandler, IEndDra
     public Item GetNewMe(Transform parent = null, Vector2 position = new Vector2()) {
         GameObject go = Instantiate(gameObject, new Vector3(), new Quaternion(), parent);
         go.GetComponent<RectTransform>().anchoredPosition = position;
-        return go.GetComponent<Item>();
+        Item it =  go.GetComponent<Item>();
+        it.id = id;
+        return it;
     }
 
 
@@ -59,7 +61,7 @@ public class Item : SelectablePausable, IBeginDragHandler, IDragHandler, IEndDra
             return;
             
         // permite que se puedan seleccionar objetos detrás del item cogido
-        gameObject.GetComponent<CanvasGroup>().blocksRaycasts = false;
+        GetComponent<CanvasGroup>().blocksRaycasts = false;
         originalPosition = transform.position;
         dragging = true;
         OnPointerClick(eventData);
@@ -87,7 +89,7 @@ public class Item : SelectablePausable, IBeginDragHandler, IDragHandler, IEndDra
             myslot.OnPointerClick(eventData);
         }  else
             transform.position = originalPosition;
-        gameObject.GetComponent<CanvasGroup>().blocksRaycasts = true;
+        GetComponent<CanvasGroup>().blocksRaycasts = true;
         dragging = true;
 	}
 

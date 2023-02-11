@@ -12,7 +12,7 @@ public abstract class Selectable : MonoBehaviour, IPointerEnterHandler, IPointer
     
 
     protected void Start() {
-        img = gameObject.GetComponent<Image>();
+        img = GetComponent<Image>();
         neutralColor = img.color;
         OverrStart();
     }
