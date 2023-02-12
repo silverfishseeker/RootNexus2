@@ -4,17 +4,18 @@ using UnityEngine;
 using System; // Math.Pow
 
 public class PlayerMovement : MonoBehaviour {
-    public float startx, starty;
 
     // Fuerzas de movimiento
     private float generalForce=1;//afecta a todas las demás
     private float fuerza; // fuerza base de desplazamiento (vertical y horizontal)
     public float fuerzaAndar; // también escalar
     public float fuerzaCarrera;
+    public float coeficienteEscalar;
     public float fuerzaSalto;
     public float fuerzaSaltoImpulsoLateral; //Al saltar se añade un impulso lateral adicional según la dirección
     public float coeficienteSaltoPared;
     public float coeficienteSaltoImpulsoLateralPared; // El salto desde una pared te desprende de ella
+
     public float rozamientoSuelo; // mientras toque a a wall
     public float rozamientoAire;
     
@@ -64,7 +65,6 @@ public class PlayerMovement : MonoBehaviour {
     private float timeTorce { get { return fuerza*Time.deltaTime; } }
 
     void Start() {
-        transform.position = new Vector3(startx, starty, 0);
 
         leftWallCollider = Instantiate(rightWallCollider, transform);
         leftWallCollider.offset = new Vector2(-leftWallCollider.offset.x, leftWallCollider.offset.y);
@@ -118,7 +118,7 @@ public class PlayerMovement : MonoBehaviour {
             isGrabingWall = true;
             // Apagamos la grabedad para poder quedarnos quietos en una pared
             rb.gravityScale = 0;
-            stepForce += new Vector2(0, timeTorce*inputVertical);
+            stepForce += new Vector2(0, timeTorce*inputVertical*coeficienteEscalar);
 
             // Fuerza hacia la pared para que no nos despeguemos de ella
             if (onRightWall)
@@ -154,7 +154,7 @@ public class PlayerMovement : MonoBehaviour {
                     stepForce += new Vector2(fuerzaSaltoImpulsoLateral*inputHorizontal, fuerzaSalto*jumpBuffer);
                     health.Add(-costeSalto);
                 } else if (isGrabingWall) {
-                    stepForce += new Vector2(0, fuerzaSalto*coeficienteSaltoPared);
+                    stepForce += new Vector2(fuerzaSaltoImpulsoLateral*coeficienteSaltoImpulsoLateralPared, fuerzaSalto*coeficienteSaltoPared);
                     health.Add(-costeSalto);
                 }
                 jumpBuffer = 1;

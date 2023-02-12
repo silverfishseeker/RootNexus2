@@ -49,7 +49,7 @@ public class BigHealthBar : MonoBehaviour {
     void Update() {
         float f = GameStateEngine.isntInventory ?
             ((hbc.curr-hbc.max) * coeficienteContinuo + currRegen) * Time.deltaTime :
-            regeneration;
+            currRegen;
         current += f;
         currIncr += f;
         if (current <= 0) {
