@@ -8,13 +8,14 @@ public class OptionsAction : IBaseAction, INotificableDialogue {
     public string textico;
     public List<string> opciones;
     public List<IBaseAction> outcomes;
+    public List<AbstractConditionAction> condiciones;
     
     public void NotificateMe(){
         next = GameStateEngine.gse.dd.chosen;
         isFinished = true;
     }
     protected override void SubRun(){
-        GameStateEngine.gse.dd.ShowOptions(textico, opciones, outcomes, this);
+        GameStateEngine.gse.dd.ShowOptions(textico, opciones, outcomes, condiciones, this);
         isFinished = false;
     }
 }

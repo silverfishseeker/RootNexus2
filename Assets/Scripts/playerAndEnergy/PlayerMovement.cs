@@ -151,10 +151,10 @@ public class PlayerMovement : MonoBehaviour {
 
             }else if (Input.GetButtonUp("Jump") && isntCansado){
                 if (onDowntWall) {
-                    stepForce += new Vector2(fuerzaSaltoImpulsoLateral*inputHorizontal, fuerzaSalto*jumpBuffer);
+                    stepForce += new Vector2(fuerzaSaltoImpulsoLateral, fuerzaSalto*jumpBuffer);
                     health.Add(-costeSalto);
                 } else if (isGrabingWall) {
-                    stepForce += new Vector2(fuerzaSaltoImpulsoLateral*coeficienteSaltoImpulsoLateralPared, fuerzaSalto*coeficienteSaltoPared);
+                    stepForce += new Vector2(-fuerzaSaltoImpulsoLateral*coeficienteSaltoImpulsoLateralPared*inputHorizontal, fuerzaSalto*coeficienteSaltoPared);
                     health.Add(-costeSalto);
                 }
                 jumpBuffer = 1;

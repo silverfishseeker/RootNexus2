@@ -7,6 +7,6 @@ public class ConditionAction : AbstractConditionAction {
     public Personaje personaje;
     public List<string> caracteristicas;
 
-    protected override bool Condition() => personaje.Condition(caracteristicas);
+    public override bool Condition() => personaje.Condition(caracteristicas);
 
 }

@@ -17,5 +17,5 @@ public abstract class AbstractConditionAction : IBaseAction {
             next = alternativa;
     }
 
-    protected abstract bool Condition();
+    public abstract bool Condition();
 }
