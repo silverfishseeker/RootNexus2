@@ -63,19 +63,20 @@ public class DialogueDisplayer : MonoBehaviour {
         cloudDialogue.SetActive(true);
     }
 
-    public void ShowOptions(string text, List<string> textos, List<IBaseAction> acciones, INotificableDialogue notificate){
+    public void ShowOptions(string text, List<string> textos, List<IBaseAction> acciones, List<AbstractConditionAction> condiciones, INotificableDialogue notificate){
         if (acciones.Count != acciones.Count)
             throw new ArgumentException("textos y acciones deben de tener la misma longitud");
         Show(text, notificate);
         isOptions = true;
-        for(int i = 0; i < textos.Count; i++){
-            GameObject go = Instantiate(opcionDialogo, transform);
-            go.GetComponent<DialogueOption>().SetTextAndAction(textos[i], acciones[i]);
-            go.GetComponent<RectTransform>().anchoredPosition = new Vector2(
-                go.GetComponent<RectTransform>().anchoredPosition.x,
-                go.GetComponent<RectTransform>().anchoredPosition.y+i*desplazamiento);
-            opciones.Push(go);
-        }
-            
+        int incrementoDesplazamiento = 0;
+        for(int i = 0; i < textos.Count; i++)
+            if (i >= condiciones.Count || condiciones[i] == null || condiciones[i].Condition()){ // nótese que aquí ignoramos los valores de next y alternativa en la action
+                GameObject go = Instantiate(opcionDialogo, transform);
+                go.GetComponent<DialogueOption>().SetTextAndAction(textos[i], acciones[i]);
+                go.GetComponent<RectTransform>().anchoredPosition = new Vector2(
+                    go.GetComponent<RectTransform>().anchoredPosition.x,
+                    go.GetComponent<RectTransform>().anchoredPosition.y+desplazamiento*(incrementoDesplazamiento++));
+                opciones.Push(go);
+            } 
     }
 }
