@@ -18,13 +18,7 @@ public class PlayerMovement : MonoBehaviour {
 
     public float rozamientoSuelo; // mientras toque a a wall
     public float rozamientoAire;
-    
-    // Propiedades de físicas
-    private float jumpBuffer = 1;
-    public float jumpBufferMax; //0+, inf
-    public float jumpBufferCoef; //1+, inf
-    public float redSpeedCoef; // 0+, 1
-    private bool isntCansado;//
+
     // Costes de energía
     private float costeHorizontal;
     public float costeAndarFps;
@@ -54,6 +48,15 @@ public class PlayerMovement : MonoBehaviour {
     public float animationYSpeedCoef;
     public float animationTresholdBaseExp;
     public float animationTresholdCoef;
+    
+    // Propiedades de físicas
+    [HideInInspector]
+    public float fakeJumpBuffer =1;
+    public float jumpBuffer => fakeJumpBuffer-1;
+    public float jumpBufferMax; //0+, inf
+    public float jumpBufferCoef; //1+, inf
+    public float redSpeedCoef; // 0+, 1
+    private bool isntCansado;//
 
     // Accesos a comopones propios
     private Rigidbody2D rb;
@@ -95,8 +98,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     // Se pausa en GameStateEngine
-    void Update() {        
-
+    void Update() {
         rb.drag = isTouchingWall ? rozamientoSuelo : rozamientoAire;
 
         // Daño de caída
@@ -146,18 +148,21 @@ public class PlayerMovement : MonoBehaviour {
         if(isTouchingWall){
             if (Input.GetButton("Jump")){
                 if (jumpBuffer < jumpBufferMax)
-                    jumpBuffer *= jumpBufferCoef;
+                    fakeJumpBuffer *= jumpBufferCoef;
                 inputHorizontal = 0; // Para que esto tenga sentido andar debe de calcularse luego
 
             }else if (Input.GetButtonUp("Jump") && isntCansado){
-                if (onDowntWall) {
-                    stepForce += new Vector2(fuerzaSaltoImpulsoLateral*inputHorizontal, fuerzaSalto*jumpBuffer);
-                    health.Add(-costeSalto);
-                } else if (isGrabingWall) {
-                    stepForce += new Vector2(-fuerzaSaltoImpulsoLateral*coeficienteSaltoImpulsoLateralPared*inputHorizontal, fuerzaSalto*coeficienteSaltoPared);
+                if (onDowntWall || isGrabingWall){
+                    float xJumpForce = fuerzaSaltoImpulsoLateral*inputHorizontal;
+                    float yJumpForce = fuerzaSalto;
+                    if(isGrabingWall){
+                        xJumpForce*=-coeficienteSaltoImpulsoLateralPared; // negativo para despegarse de la pared
+                        yJumpForce*=coeficienteSaltoPared;
+                    }
+                    stepForce += new Vector2(xJumpForce, yJumpForce)*jumpBuffer;
                     health.Add(-costeSalto);
                 }
-                jumpBuffer = 1;
+                fakeJumpBuffer = 1;
             }
 
         }
