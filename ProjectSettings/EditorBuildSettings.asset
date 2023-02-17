@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Niveles de prueba de Miguel/Anticuado/La Cueva del Argentino.unity
     guid: 1a36ba609a2ce5243afa903d1b6246e5
+  - enabled: 1
+    path: Assets/Scenes/Niveles de prueba de Miguel/Prueba Mina 13/Mina 13.unity
+    guid: 6e5c2cf16abdc9d42a7f9a9844432a78
+  - enabled: 1
+    path: Assets/Scenes/Niveles de prueba de Miguel/Prueba Mina 13/Cuarto padre Zyra.unity
+    guid: ed85b781c6520834095e918e2832e29b
   m_configObjects: {}
