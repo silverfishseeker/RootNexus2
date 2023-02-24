@@ -3242,7 +3242,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 1
-      m_TileSpriteIndex: 23
+      m_TileSpriteIndex: 26
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -4813,14 +4813,14 @@ Tilemap:
     m_Data: {fileID: 21300000, guid: adfe2c9b47720bf43bbbfc7a8cc46ed9, type: 3}
   - m_RefCount: 3
     m_Data: {fileID: 21300000, guid: 375d23a38cae78340b5dc905f6bbeaec, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: 21300000, guid: 5c01230c9b45b4a42b3ea705ac77de2b, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 1
     m_Data: {fileID: 21300000, guid: b1a1a3e1f690fab40b78a50ba4492b88, type: 3}
   - m_RefCount: 7
     m_Data: {fileID: 21300000, guid: 849d8e4b9f8f5884c9b553603438ce6a, type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: 21300000, guid: 5c01230c9b45b4a42b3ea705ac77de2b, type: 3}
   - m_RefCount: 1
     m_Data: {fileID: 21300000, guid: 9848a882f13aeef4481cba2cdb4ca504, type: 3}
   - m_RefCount: 1
@@ -5084,7 +5084,7 @@ GameObject:
   m_IsActive: 1
 --- !u!95 &1432524351
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5101,7 +5101,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!70 &1432524352
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -5151,10 +5151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3adf7fff9b2b1a4eb41d2cdde93f966, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startx: -7
-  starty: -2
   fuerzaAndar: 300
   fuerzaCarrera: 450
+  coeficienteEscalar: 0
   fuerzaSalto: 170
   fuerzaSaltoImpulsoLateral: 60
   coeficienteSaltoPared: 1
@@ -5165,12 +5164,22 @@ MonoBehaviour:
   costeCorrerFps: 3
   costeSalto: 10
   costeParedFps: 2
-  costeBaseExpCaida: 1.1
+  costeExpCaida: 0
   costeCoefCaida: 0.1
-  wall: {fileID: 0}
+  maskWall:
+    serializedVersion: 2
+    m_Bits: 0
   groundCollider: {fileID: 1838102241}
   rightWallCollider: {fileID: 894698175}
   isGrabingWall: 0
+  animationXSpeedCoef: 0
+  animationYSpeedCoef: 0
+  animationTresholdBaseExp: 0
+  animationTresholdCoef: 0
+  fakeJumpBuffer: 1
+  jumpBufferMax: 0
+  jumpBufferCoef: 0
+  redSpeedCoef: 0
 --- !u!212 &1432524355
 SpriteRenderer:
   m_ObjectHideFlags: 0
