@@ -16,6 +16,7 @@ public class Personaje : MonoBehaviour {
         }
     }
 
+    public int id;
     // Es pública para el isnpector de unity, no editar directamente
     public List<string> caracteristicas;
 

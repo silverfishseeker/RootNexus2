@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EntradaDeNivel : MonoBehaviour {
-    public string nombre;
+    public int id;
     public bool facingLeft;
+
+    void Start(){
+        if(id == 0)
+            Debug.LogError("Una entrada de nivel no puede tener un id 0");
+    }
 }
