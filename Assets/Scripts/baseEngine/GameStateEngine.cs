@@ -49,6 +49,7 @@ public class GameStateEngine : MonoBehaviour {
         isntPaused = false;
         GeneralPause();
     }
+    
     public static void Resume() {
         isntPaused = true;
         if(isntInventory)

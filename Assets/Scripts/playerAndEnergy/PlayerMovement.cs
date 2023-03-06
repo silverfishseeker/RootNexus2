@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour {
     // Fuerzas de movimiento
     private float generalForce=1;//afecta a todas las demás
     private float fuerza; // fuerza base de desplazamiento (vertical y horizontal)
+    [Header("Fuerzas de movimiento")]
     public float fuerzaAndar; // también escalar
     public float fuerzaCarrera;
     public float coeficienteEscalar;
@@ -15,20 +16,21 @@ public class PlayerMovement : MonoBehaviour {
     public float fuerzaSaltoImpulsoLateral; //Al saltar se añade un impulso lateral adicional según la dirección
     public float coeficienteSaltoPared;
     public float coeficienteSaltoImpulsoLateralPared; // El salto desde una pared te desprende de ella
-
     public float rozamientoSuelo; // mientras toque a a wall
     public float rozamientoAire;
 
-    // Costes de energía
-    private float costeHorizontal;
+    //-----------------------
+    [Header("Costes de energía")]
     public float costeAndarFps;
     public float costeCorrerFps;
+    private float costeHorizontal;
     public float costeSalto;
     public float costeParedFps;
     public float costeExpCaida;
     public float costeCoefCaida;
 
-    // Colliders
+    //-----------------------
+    [Header("Colliders")]
     public LayerMask maskWall;
     public Collider2D groundCollider;
     public Collider2D rightWallCollider;
@@ -43,20 +45,27 @@ public class PlayerMovement : MonoBehaviour {
     private Vector2 lastVelocity;
     public bool isGrabingWall;
 
-    // Parámetros animación
+    //-----------------------
+    [Header("Parámetros animación")]
     public float animationXSpeedCoef;
     public float animationYSpeedCoef;
     public float animationTresholdBaseExp;
     public float animationTresholdCoef;
     
-    // Propiedades de físicas
-    [HideInInspector]
-    public float fakeJumpBuffer =1;
-    public float jumpBuffer => fakeJumpBuffer-1;
+    //-----------------------
+    [Header("Propiedades de físicas")]
     public float jumpBufferMax; //0+, inf
     public float jumpBufferCoef; //1+, inf
+    public float jumpBuffer => fakeJumpBuffer-1;
+    [HideInInspector]
+    public float fakeJumpBuffer =1;
     public float redSpeedCoef; // 0+, 1
     private bool isntCansado;//
+    [Tooltip("La ralentizacion por caida depende del daño de caída")]
+    public bool isRalentizacionCaida;//
+    public float coeficienteRalentizacionCaida; // 0+, inf
+    public float persistenciaRalentizacionCaida; // 0+, 1
+    private float currentCaidaRalentizacion = 1;
 
     // Accesos a comopones propios
     private Rigidbody2D rb;
@@ -101,10 +110,19 @@ public class PlayerMovement : MonoBehaviour {
     void Update() {
         rb.drag = isTouchingWall ? rozamientoSuelo : rozamientoAire;
 
+        // ralentizacion por caída
+        // se multiplica por todo al final
+        if(currentCaidaRalentizacion > 0.999)
+            currentCaidaRalentizacion = 1;
+        else if(currentCaidaRalentizacion < 1)
+            currentCaidaRalentizacion += (1-currentCaidaRalentizacion) * (1-persistenciaRalentizacionCaida) * Time.deltaTime;
+
         // Daño de caída
         if (onDowntWall && !wasOnDowntWall){
             float fallDamage = ((float)Math.Pow(Math.Abs(lastVelocity.y), costeExpCaida))*costeCoefCaida;
             health.Add(-fallDamage);
+            // función inversa que pasa por (0,1)
+            currentCaidaRalentizacion = coeficienteRalentizacionCaida / (fallDamage+coeficienteRalentizacionCaida);
         }
         wasOnDowntWall = onDowntWall;
         lastVelocity = rb.velocity;
@@ -174,7 +192,9 @@ public class PlayerMovement : MonoBehaviour {
             health.AddDelta(-costeHorizontal);
         }
 
-        rb.AddForce(stepForce*generalForce);
+        rb.AddForce(stepForce * generalForce * (
+            isRalentizacionCaida ? currentCaidaRalentizacion : 1
+        ));
 
         // Animación
         if (isGrabingWall)
