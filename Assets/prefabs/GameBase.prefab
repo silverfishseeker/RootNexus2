@@ -751,10 +751,13 @@ MonoBehaviour:
   animationYSpeedCoef: 2
   animationTresholdBaseExp: 1.5
   animationTresholdCoef: 0.5
-  fakeJumpBuffer: 1
   jumpBufferMax: 3
   jumpBufferCoef: 1.002
+  fakeJumpBuffer: 1
   redSpeedCoef: 0.9
+  isRalentizacionCaida: 1
+  coeficienteRalentizacionCaida: 4
+  persistenciaRalentizacionCaida: 0.5
 --- !u!50 &1180539254670517774
 Rigidbody2D:
   serializedVersion: 4
