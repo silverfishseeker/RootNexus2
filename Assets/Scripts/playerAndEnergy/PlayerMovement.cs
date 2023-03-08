@@ -57,12 +57,14 @@ public class PlayerMovement : MonoBehaviour {
     public float jumpBufferMax; //0+, inf
     public float jumpBufferCoef; //1+, inf
     public float jumpBuffer => fakeJumpBuffer-1;
+    public float jumpBufferRalentizacion;
     [HideInInspector]
     public float fakeJumpBuffer =1;
+    private bool isJumpBuffer;
     public float redSpeedCoef; // 0+, 1
     private bool isntCansado;//
     [Tooltip("La ralentizacion por caida depende del daño de caída")]
-    public bool isRalentizacionCaida;//
+    private bool isRalentizacionCaida;//
     public float coeficienteRalentizacionCaida; // 0+, inf
     public float persistenciaRalentizacionCaida; // 0+, 1
     private float currentCaidaRalentizacion = 1;
@@ -167,20 +169,23 @@ public class PlayerMovement : MonoBehaviour {
             if (Input.GetButton("Jump")){
                 if (jumpBuffer < jumpBufferMax)
                     fakeJumpBuffer *= jumpBufferCoef;
-                inputHorizontal = 0; // Para que esto tenga sentido andar debe de calcularse luego
+                isJumpBuffer = true;
 
-            }else if (Input.GetButtonUp("Jump") && isntCansado){
-                if (onDowntWall || isGrabingWall){
-                    float xJumpForce = fuerzaSaltoImpulsoLateral*inputHorizontal;
-                    float yJumpForce = fuerzaSalto;
-                    if(isGrabingWall){
-                        xJumpForce*=-coeficienteSaltoImpulsoLateralPared; // negativo para despegarse de la pared
-                        yJumpForce*=coeficienteSaltoPared;
+            }else {
+                isJumpBuffer = false;
+                if (Input.GetButtonUp("Jump") && isntCansado){
+                    if (onDowntWall || isGrabingWall){
+                        float xJumpForce = fuerzaSaltoImpulsoLateral*inputHorizontal;
+                        float yJumpForce = fuerzaSalto;
+                        if(isGrabingWall){
+                            xJumpForce*=-coeficienteSaltoImpulsoLateralPared; // negativo para despegarse de la pared
+                            yJumpForce*=coeficienteSaltoPared;
+                        }
+                        stepForce += new Vector2(xJumpForce, yJumpForce)*jumpBuffer;
+                        health.Add(-costeSalto);
                     }
-                    stepForce += new Vector2(xJumpForce, yJumpForce)*jumpBuffer;
-                    health.Add(-costeSalto);
+                    fakeJumpBuffer = 1;
                 }
-                fakeJumpBuffer = 1;
             }
 
         }
@@ -192,9 +197,10 @@ public class PlayerMovement : MonoBehaviour {
             health.AddDelta(-costeHorizontal);
         }
 
-        rb.AddForce(stepForce * generalForce * (
-            isRalentizacionCaida ? currentCaidaRalentizacion : 1
-        ));
+        rb.AddForce(stepForce * generalForce 
+            * (isRalentizacionCaida ? currentCaidaRalentizacion : 1)
+            * (isJumpBuffer ? jumpBufferRalentizacion : 1) // ralentizamos al men si tiene Jump pulsado
+        );
 
         // Animación
         if (isGrabingWall)
