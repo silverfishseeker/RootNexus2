@@ -66,5 +66,11 @@ public class BigHealthBar : MonoBehaviour {
         );
         healthBarImage.color = new Color(f,f,f,1) * diffColor + baseColor;
         currIncr *=duracionColor;
+
+
+        
+        if (Input.GetKeyUp("u")) {
+            current = max;
+        }
     }
 }

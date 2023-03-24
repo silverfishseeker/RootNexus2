@@ -7,11 +7,12 @@ public class PlayerMovement : MonoBehaviour {
 
     // Fuerzas de movimiento
     private float generalForce=1;//afecta a todas las demás
-    private float fuerza; // fuerza base de desplazamiento (vertical y horizontal)
     [Header("Fuerzas de movimiento")]
-    public float fuerzaAndar; // también escalar
-    public float fuerzaCarrera;
+    public float fuerza; // fuerza base de desplazamiento (vertical y horizontal)
+    public float coeficienteAgacharse;
+    private bool isAgachado;
     public float coeficienteEscalar;
+    public float coeficienteAire;
     public float fuerzaSalto;
     public float fuerzaSaltoImpulsoLateral; //Al saltar se añade un impulso lateral adicional según la dirección
     public float coeficienteSaltoPared;
@@ -22,8 +23,6 @@ public class PlayerMovement : MonoBehaviour {
     //-----------------------
     [Header("Costes de energía")]
     public float costeAndarFps;
-    public float costeCorrerFps;
-    private float costeHorizontal;
     public float costeSalto;
     public float costeParedFps;
     public float costeExpCaida;
@@ -37,10 +36,10 @@ public class PlayerMovement : MonoBehaviour {
     private Collider2D leftWallCollider; // copia del right
 
     // Estados de tocamientos
-    public bool isTouchingWall => GetComponent<Collider2D>().IsTouchingLayers(maskWall); // si el collider original del objeto está tocando el wall
     public bool onLeftWall => leftWallCollider.IsTouchingLayers(maskWall);
     public bool onRightWall => rightWallCollider.IsTouchingLayers(maskWall);
     public bool onDowntWall => groundCollider.IsTouchingLayers(maskWall);
+    public bool isTouchingWall => onLeftWall || onRightWall || onDowntWall;//GetComponent<Collider2D>().IsTouchingLayers(maskWall); // si el collider original del objeto está tocando el wall
     private bool wasOnDowntWall;
     private Vector2 lastVelocity;
     public bool isGrabingWall;
@@ -64,10 +63,11 @@ public class PlayerMovement : MonoBehaviour {
     public float redSpeedCoef; // 0+, 1
     private bool isntCansado;//
     [Tooltip("La ralentizacion por caida depende del daño de caída")]
-    private bool isRalentizacionCaida;//
+    public bool isRalentizacionCaida;//
     public float coeficienteRalentizacionCaida; // 0+, inf
     public float persistenciaRalentizacionCaida; // 0+, 1
     private float currentCaidaRalentizacion = 1;
+
 
     // Accesos a comopones propios
     private Rigidbody2D rb;
@@ -91,8 +91,6 @@ public class PlayerMovement : MonoBehaviour {
         health  = GameStateEngine.gse.hbc;
         GameStateEngine.gse.avatar = gameObject;
 
-        fuerza = fuerzaAndar;
-        costeHorizontal = costeAndarFps;
         Descansar();
     }
 
@@ -110,7 +108,7 @@ public class PlayerMovement : MonoBehaviour {
 
     // Se pausa en GameStateEngine
     void Update() {
-        rb.drag = isTouchingWall ? rozamientoSuelo : rozamientoAire;
+        rb.drag = onDowntWall ? rozamientoSuelo : rozamientoAire;
 
         // ralentizacion por caída
         // se multiplica por todo al final
@@ -136,17 +134,18 @@ public class PlayerMovement : MonoBehaviour {
         float inputVertical = Input.GetAxis("Vertical");
 
         // Escalar
-        if (((inputHorizontal>0 && onRightWall)  ||  (inputHorizontal<0 && onLeftWall))  && isntCansado) {
+        if (isntCansado  && ((inputHorizontal>0 && onRightWall)  ||  (inputHorizontal<0 && onLeftWall))) {
             isGrabingWall = true;
+            rb.drag = rozamientoSuelo;
             // Apagamos la grabedad para poder quedarnos quietos en una pared
             rb.gravityScale = 0;
             stepForce += new Vector2(0, timeTorce*inputVertical*coeficienteEscalar);
 
             // Fuerza hacia la pared para que no nos despeguemos de ella
-            if (onRightWall)
-                stepForce += new Vector2( 0.5f * timeTorce, 0);
-            if (onLeftWall)
-                stepForce += new Vector2(-0.5f * timeTorce, 0);
+            // if (onRightWall)
+            //     stepForce += new Vector2( 0.0f * timeTorce, 0);
+            // if (onLeftWall)
+            //     stepForce += new Vector2(-0.5f * timeTorce, 0);
             
             health.AddDelta(-costeParedFps);
 
@@ -155,15 +154,20 @@ public class PlayerMovement : MonoBehaviour {
             rb.gravityScale = gForce;
         }
 
-        // Acelerar
-        if (Input.GetButton("Run") && isTouchingWall) {
-            fuerza = fuerzaCarrera;
-            costeHorizontal = costeCorrerFps;
-        } else {
-            fuerza = fuerzaAndar;
-            costeHorizontal = costeAndarFps;
-        }
-        
+        // Agacharse
+        // bool wasAgachado = isAgachado;
+        // isAgachado = Input.GetButton("Run") && onDowntWall;
+        // if(wasAgachado != isAgachado) {
+        //     if(isAgachado){
+        //         transform.localScale = new Vector3(1f, 0.5f, 1f);
+        //         transform.position += new Vector3(0f, -0.5f, 0f);
+        //     } else {
+        //         transform.localScale = new Vector3(1f, 1f, 1f);
+        //         transform.position += new Vector3(0f, 0f, 0f);
+        //     }
+        // }
+
+
         // Saltar
         if(isTouchingWall){
             if (Input.GetButton("Jump")){
@@ -193,22 +197,26 @@ public class PlayerMovement : MonoBehaviour {
         // Andar
         if (inputHorizontal != 0) {
             sr.flipX = inputHorizontal<0;
-            stepForce += new Vector2(timeTorce*inputHorizontal, 0);
-            health.AddDelta(-costeHorizontal);
+            stepForce += new Vector2(timeTorce*inputHorizontal
+                    *(onDowntWall?1:coeficienteAire)
+                , 0);
+
+            health.AddDelta(-costeAndarFps);
         }
 
         rb.AddForce(stepForce * generalForce 
             * (isRalentizacionCaida ? currentCaidaRalentizacion : 1)
+            * (isAgachado ? coeficienteAgacharse : 1)
             * (isJumpBuffer ? jumpBufferRalentizacion : 1) // ralentizamos al men si tiene Jump pulsado
         );
 
         // Animación
-        if (isGrabingWall)
-            animator.speed = (float)Math.Abs(rb.velocity.y) * animationYSpeedCoef;
-        else if (rb.velocity.x != 0)
-            animator.speed = (float)Math.Abs(rb.velocity.x) * animationXSpeedCoef;
-        else
-            animator.speed = 1;
+        // if (isGrabingWall)
+        //     animator.speed = (float)Math.Abs(rb.velocity.y) * animationYSpeedCoef;
+        // else if (rb.velocity.x != 0)
+        //     animator.speed = (float)Math.Abs(rb.velocity.x) * animationXSpeedCoef;
+        // else
+        //     animator.speed = 1;
 
         animator.SetFloat("xVelocity", 
             (float) (1 - Math.Pow(animationTresholdBaseExp, -Math.Abs(rb.velocity.x*animationTresholdCoef)))
