@@ -306,8 +306,8 @@ MonoBehaviour:
   regeneration: 1
   highRegeneration: 0.5
   maxColor: {r: 0.8392157, g: 0.06666667, b: 0.043137256, a: 1}
-  coeficienteCambioColor: 1
-  desplazamientoCambioColor: 0.5
+  coeficienteCambioColor: 0.5
+  desplazamientoCambioColor: 0
   duracionColor: 0.99
 --- !u!1 &1519341250
 GameObject:
@@ -726,20 +726,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3adf7fff9b2b1a4eb41d2cdde93f966, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fuerzaAndar: 300
-  fuerzaCarrera: 428.31
-  coeficienteEscalar: 1
-  fuerzaSalto: 100
-  fuerzaSaltoImpulsoLateral: 60
+  fuerza: 1200
+  coeficienteAgacharse: 0.5
+  coeficienteEscalar: 0.7
+  coeficienteAire: 0.6
+  fuerzaSalto: 150
+  fuerzaSaltoImpulsoLateral: 1
   coeficienteSaltoPared: 0.5
-  coeficienteSaltoImpulsoLateralPared: 2
-  rozamientoSuelo: 0.6
-  rozamientoAire: 0.01
+  coeficienteSaltoImpulsoLateralPared: 10
+  rozamientoSuelo: 6
+  rozamientoAire: 0.4
   costeAndarFps: 1
-  costeCorrerFps: 3
   costeSalto: 10
-  costeParedFps: 2
-  costeExpCaida: 3
+  costeParedFps: 6
+  costeExpCaida: 4
   costeCoefCaida: 0.01
   maskWall:
     serializedVersion: 2
@@ -753,8 +753,9 @@ MonoBehaviour:
   animationTresholdCoef: 0.5
   jumpBufferMax: 3
   jumpBufferCoef: 1.002
+  jumpBufferRalentizacion: 0.4
   fakeJumpBuffer: 1
-  redSpeedCoef: 0.9
+  redSpeedCoef: 0.5
   isRalentizacionCaida: 1
   coeficienteRalentizacionCaida: 4
   persistenciaRalentizacionCaida: 0.5
@@ -1553,8 +1554,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2392,7 +2393,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1180539256712193126}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.8150353, y: 1.317286, z: 0.2914667}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2508,10 +2509,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a5860df615a6d347a33eb59809261e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  max: 40
-  coeficiente: 1
-  regeneration: 0.02
-  curr: 0
+  max: 60
+  coeficiente: 2
+  regeneration: 10
+  curr: 60
   bhb: {fileID: 780718172}
 --- !u!212 &2616639653786930488
 SpriteRenderer:
@@ -2520,7 +2521,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6318804480222291083}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1

@@ -127,9 +127,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   first: {fileID: 2723025314612030097}
-  i: 0
   active: 1
   distancia: 2
+  resaltado: {fileID: 7898284768844379942}
 --- !u!1 &7898284768844379942
 GameObject:
   m_ObjectHideFlags: 0

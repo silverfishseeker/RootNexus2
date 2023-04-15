@@ -6,14 +6,13 @@ using UnityEngine;
 public class Clickable : Activable {
     public float distancia;
 
-    private GameObject resaltado;
+    public GameObject resaltado;
     private SpriteRenderer rsp;
     private bool isAvalaible => GameStateEngine.isntEitherPause && active;
     private bool isNear => distancia > Vector2.Distance(gameObject.transform.position, GameStateEngine.gse.avatar.transform.position);
 
     new protected void Start() {
         base.Start();
-        resaltado = gameObject.transform.GetChild(0).gameObject;
         rsp = resaltado.GetComponent<SpriteRenderer>();
         resaltado.SetActive(false);
     }
