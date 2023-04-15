@@ -608,7 +608,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1180539254670517770}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalPosition: {x: 7.39, y: 14.08, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -691,9 +691,6 @@ MonoBehaviour:
   coeficienteSaltoImpulsoLateralPared: 4
   rozamientoSuelo: 0.6
   rozamientoAire: 0.01
-  jumpBufferMax: 3
-  jumpBufferCoef: 1.002
-  redSpeedCoef: 0.9
   costeAndarFps: 1
   costeCorrerFps: 3
   costeSalto: 10
@@ -710,6 +707,10 @@ MonoBehaviour:
   animationYSpeedCoef: 2
   animationTresholdBaseExp: 1.5
   animationTresholdCoef: 0.5
+  fakeJumpBuffer: 1
+  jumpBufferMax: 3
+  jumpBufferCoef: 1.002
+  redSpeedCoef: 0.9
 --- !u!50 &1180539254670517774
 Rigidbody2D:
   serializedVersion: 4
@@ -749,7 +750,7 @@ CapsuleCollider2D:
   m_Direction: 0
 --- !u!95 &1180539254670517809
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -766,7 +767,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &1180539254732230474
 GameObject:
   m_ObjectHideFlags: 0
