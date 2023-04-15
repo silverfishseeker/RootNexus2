@@ -31,14 +31,15 @@ public class PlayerMovement : MonoBehaviour {
     //-----------------------
     [Header("Colliders")]
     public LayerMask maskWall;
+    public LayerMask climbWall;
     public Collider2D groundCollider;
     public Collider2D rightWallCollider;
     private Collider2D leftWallCollider; // copia del right
 
     // Estados de tocamientos
-    public bool onLeftWall => leftWallCollider.IsTouchingLayers(maskWall);
-    public bool onRightWall => rightWallCollider.IsTouchingLayers(maskWall);
-    public bool onDowntWall => groundCollider.IsTouchingLayers(maskWall);
+    public bool onLeftWall => leftWallCollider.IsTouchingLayers(climbWall);
+    public bool onRightWall => rightWallCollider.IsTouchingLayers(climbWall);
+    public bool onDowntWall => groundCollider.IsTouchingLayers(maskWall) || groundCollider.IsTouchingLayers(climbWall);
     public bool isTouchingWall => onLeftWall || onRightWall || onDowntWall;//GetComponent<Collider2D>().IsTouchingLayers(maskWall); // si el collider original del objeto está tocando el wall
     private bool wasOnDowntWall;
     private Vector2 lastVelocity;
