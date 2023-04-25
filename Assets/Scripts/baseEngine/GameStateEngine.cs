@@ -39,6 +39,7 @@ public class GameStateEngine : MonoBehaviour {
         AudioListener.pause = true;
         gse.avatar.GetComponent<PlayerMovement>().enabled = false;
     }
+
     private static void GeneralResume(){
         Time.timeScale = 1f;
         AudioListener.pause = false;
@@ -124,6 +125,6 @@ public class GameStateEngine : MonoBehaviour {
         if (isntPaused && Input.GetKeyUp("e")) {
             if (isntInventory) AbrirInventario();
             else CerrarInventario();
-        }
+        }  
     }
 }
