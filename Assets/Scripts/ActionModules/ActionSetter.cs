@@ -14,6 +14,10 @@ public class ActionSetter : MonoBehaviour {
 
     public void Run(){
         GameStateEngine.Pause();
+        if (first == null){
+            Debug.LogError("La primera acción no puede ser nula");
+            return;
+        }
         current = first;
         current.Run();
     }
