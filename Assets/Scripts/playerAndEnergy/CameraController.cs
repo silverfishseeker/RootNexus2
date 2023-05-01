@@ -3,72 +3,80 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour {
-    const float ENOUGH_DISTANCE =0.01f;
+    const float ENOUGH_DISTANCE = 0.01f;
+    const float Z_DISPLACEMENT = -1;
 
     public GameObject player;
 
-    private Transform pt;
+    private GameObject stalkPoint;
     private Camera camara;
-    private float defaultSize;
 
-    private bool isInTransition;
-    private bool isFollowMode = true;
+    public bool isInTransition;
+    public bool isFollowMode = true;
 
-    private Vector3 goal;
-    private Vector3 pos {get=>transform.position; set=>transform.position=value;}
     private float transTime;
-    //public float cameraSize = 5f;
+    private Vector3 pos {get=>transform.position; set=>transform.position=value;}
+    public bool isStaticGoal;
+    public Vector3 goalVal;
+    private Vector3 goal {
+        get => isStaticGoal ? goalVal : stalkPoint.transform.position;
+        set {
+            isStaticGoal = true;
+            goalVal = value;
+        }
+    }
+    public float defaultSize;
+    private float size {get=>camara.orthographicSize; set=>camara.orthographicSize=value;}
+    public float goalSize;
 
-    private Camera mainCamera;
 
     void Start() {
-        pt = player.transform;
-        mainCamera = GetComponent<Camera>();
-        // defaultSize = camara.orthographicSize;
-        goal = new Vector3(pos.x,pos.y,pos.z);
+        camara = GetComponent<Camera>();
+        defaultSize = camara.orthographicSize;
+        isFollowMode = true;
 
+        stalkPoint = new GameObject("stalkPoint");
+        stalkPoint.transform.parent = player.transform;
+        stalkPoint.transform.localPosition = new Vector3(0,0,Z_DISPLACEMENT);
     }
 
-    void Update() {
-        // if(Input.GetKey(KeyCode.H))
-        //     camara.orthographicSize = camara.orthographicSize + 1*Time.deltaTime;
-
-        // if(Input.GetKey(KeyCode.G))
-        //     camara.orthographicSize = camara.orthographicSize - 1*Time.deltaTime;
-
-        // if(Input.GetKey(KeyCode.J))
-        //     camara.orthographicSize = defaultSize;
-
-        if (isFollowMode) {
-            pos = new Vector3(pt.position.x, pt.position.y, pos.z);
-        }else if (isInTransition) {
-            pos = pos + (goal-pos)/transTime*Time.deltaTime; // cinemática
-            transTime-=Time.deltaTime;
-            if (Vector3.Distance(pos, goal) < ENOUGH_DISTANCE)
-                isInTransition = false;
-        }
-
-        if(Input.GetKeyUp("h")){
-            if (isFollowMode)
-                ChangeCamara(0,0,0,2);
-            else
-                StalkMaleciously();
-        }
-
-    }
-
-    public void StalkMaleciously(){
+    public void StalkMaleciously(float seconds){
+        ChangeCamara(new Vector3(), 1, seconds);
+        isStaticGoal = false;
         isFollowMode = true;
     }
 
-    public void ChangeCamara(float x, float y, float zoom, float seconds){
+    public void ChangeCamara(float x, float y, float zoom, float seconds) => ChangeCamara(new Vector3(x, y, Z_DISPLACEMENT), zoom, seconds);
+    
+    public void ChangeCamara(Vector3 pos, float zoom, float seconds) {
         if(seconds <= 0){
             Debug.LogError("No se pudo hacer la transición de cámara porque el tiempo es menor o igual a 0.");
             return;
         }
-        goal = new Vector3(x, y, goal.z);
+        goal = pos;
+        goalSize = zoom*defaultSize;
+        transTime = seconds;
+
         isInTransition = true;
         isFollowMode = false;
-        transTime = seconds;
+    }
+
+    void Update() {
+        if (isInTransition) {  
+            //pos  = pos  + (goal    -pos )/transTime*Time.deltaTime; // cinemática
+            float timeCoeff = Time.deltaTime / transTime;
+            pos  = Vector3.Lerp(pos, goal, Vector3.Distance(goal,pos) * timeCoeff);
+            size = Mathf.Lerp(size, goalSize, Mathf.Abs(goalSize-size) * timeCoeff);            
+
+            transTime-=Time.deltaTime;
+            if (Vector3.Distance(pos, goal) < ENOUGH_DISTANCE)
+                isInTransition = false;
+            else if (transTime < 0)
+                transTime+=Time.deltaTime;
+
+        }else if (isFollowMode) {
+            pos = stalkPoint.transform.position;
+        }
+
     }
 }
