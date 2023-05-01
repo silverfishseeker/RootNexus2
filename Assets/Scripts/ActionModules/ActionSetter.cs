@@ -8,7 +8,7 @@ public class ActionSetter : MonoBehaviour {
     
     private IBaseAction current;
 
-    protected void Start(){
+    public void Start(){
         current = null;
     }
 

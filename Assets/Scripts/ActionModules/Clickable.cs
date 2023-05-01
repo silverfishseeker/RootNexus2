@@ -8,7 +8,6 @@ public class Clickable : Activable {
 
     public GameObject resaltado;
     private SpriteRenderer rsp;
-    private bool isAvalaible => GameStateEngine.isntEitherPause && active;
     private bool isNear => distancia > Vector2.Distance(gameObject.transform.position, GameStateEngine.gse.avatar.transform.position);
 
     new protected void Start() {
@@ -35,7 +34,7 @@ public class Clickable : Activable {
     }
 
     void OnMouseDown() {
-        if (isAvalaible && isNear) {
+        if (isNear) {
             Run();
         }
     }
