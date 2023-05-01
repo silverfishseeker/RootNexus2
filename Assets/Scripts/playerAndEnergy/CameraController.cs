@@ -40,8 +40,13 @@ public class CameraController : MonoBehaviour {
         stalkPoint.transform.localPosition = new Vector3(0,0,Z_DISPLACEMENT);
     }
 
-    public void StalkMaleciously(float seconds){
-        ChangeCamara(new Vector3(), 1, seconds);
+    public void DefaultCamera(float seconds){
+        StalkMaleciously(0, 0, 1, seconds);
+    }
+
+    public void StalkMaleciously(float x, float y, float zoom, float seconds) {
+        stalkPoint.transform.localPosition = new Vector3(x,y,Z_DISPLACEMENT);
+        ChangeCamara(new Vector3(), zoom, seconds);
         isStaticGoal = false;
         isFollowMode = true;
     }
@@ -49,8 +54,8 @@ public class CameraController : MonoBehaviour {
     public void ChangeCamara(float x, float y, float zoom, float seconds) => ChangeCamara(new Vector3(x, y, Z_DISPLACEMENT), zoom, seconds);
     
     public void ChangeCamara(Vector3 pos, float zoom, float seconds) {
-        if(seconds <= 0){
-            Debug.LogError("No se pudo hacer la transición de cámara porque el tiempo es menor o igual a 0.");
+        if(seconds < 0){
+            Debug.LogError("No se pudo hacer la transición de cámara porque el tiempo es menor a 0.");
             return;
         }
         goal = pos;
@@ -77,6 +82,5 @@ public class CameraController : MonoBehaviour {
         }else if (isFollowMode) {
             pos = stalkPoint.transform.position;
         }
-
     }
 }
