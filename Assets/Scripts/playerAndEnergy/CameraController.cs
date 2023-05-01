@@ -11,13 +11,13 @@ public class CameraController : MonoBehaviour {
     private GameObject stalkPoint;
     private Camera camara;
 
-    public bool isInTransition;
-    public bool isFollowMode = true;
+    private bool isInTransition;
+    private bool isFollowMode = true;
 
     private float transTime;
     private Vector3 pos {get=>transform.position; set=>transform.position=value;}
-    public bool isStaticGoal;
-    public Vector3 goalVal;
+    private bool isStaticGoal;
+    private Vector3 goalVal;
     private Vector3 goal {
         get => isStaticGoal ? goalVal : stalkPoint.transform.position;
         set {
@@ -25,9 +25,9 @@ public class CameraController : MonoBehaviour {
             goalVal = value;
         }
     }
-    public float defaultSize;
+    private float defaultSize;
     private float size {get=>camara.orthographicSize; set=>camara.orthographicSize=value;}
-    public float goalSize;
+    private float goalSize;
 
 
     void Start() {
