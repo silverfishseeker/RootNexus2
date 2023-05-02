@@ -8,7 +8,7 @@ public class CamaraAction : IBaseAction {
     public bool isDefault;
     public bool coordenadasRelativas;
     public Vector2 posicion;
-    public float escala;
+    public float tamaño;
     public float tiempo;
 
     void Start(){
@@ -22,9 +22,9 @@ public class CamaraAction : IBaseAction {
             camara.DefaultCamera(tiempo);
         else{
             if (coordenadasRelativas)
-                camara.StalkMaleciously(posicion.x, posicion.y, escala, tiempo);
+                camara.StalkMaleciously(posicion.x, posicion.y, tamaño, tiempo);
             else
-                camara.ChangeCamara(posicion.x, posicion.y, escala, tiempo);
+                camara.ChangeCamara(posicion.x, posicion.y, tamaño, tiempo);
         }
 
     }

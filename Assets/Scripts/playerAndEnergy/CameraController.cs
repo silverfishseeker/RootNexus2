@@ -41,7 +41,7 @@ public class CameraController : MonoBehaviour {
     }
 
     public void DefaultCamera(float seconds){
-        StalkMaleciously(0, 0, 1, seconds);
+        StalkMaleciously(0, 0, defaultSize, seconds);
     }
 
     public void StalkMaleciously(float x, float y, float zoom, float seconds) {
@@ -59,7 +59,7 @@ public class CameraController : MonoBehaviour {
             return;
         }
         goal = pos;
-        goalSize = zoom*defaultSize;
+        goalSize = zoom;
         transTime = seconds;
 
         isInTransition = true;
