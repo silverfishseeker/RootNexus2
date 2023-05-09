@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MusicAction : IBaseAction {
+public class MusicAction : AbstractMusicAction {
     
-    public AudioClip clip;
     public bool loop; //loop
     [Range(0f, 1f)]
     public float volume; //volume
@@ -12,9 +11,8 @@ public class MusicAction : IBaseAction {
     public float stereoPan; //panStereo
     [Range(0f, 1.1f)]
     public float reverbZoneMix; //reverbZoneMix
-    public float transTime;
     
-    protected override void SubRun(){
+    protected override void MusicRun(){
         GameStateEngine.gse.radio.AddTrack(clip,loop,volume,stereoPan,reverbZoneMix,transTime);
     }
 }
