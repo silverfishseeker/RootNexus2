@@ -81,6 +81,7 @@ public class GameStateEngine : MonoBehaviour {
     public ObjetosInventario oi;
     public GameObject avatar;
     public PersonajesCache pc;
+    public Radio radio;
     private int idEntrada = 0;
 
     void OnEnable() {
