@@ -23,7 +23,7 @@ public class Triggered : Activable {
     void OnTriggerExit2D(Collider2D other){
         if (other.gameObject.tag == "Sira" && hasCollided == true){
             hasCollided = false;
-            if(isAvalaible)
+            if(isAvalaible && onExitAction != null)
                 exitEvent.Run();
         }
             
