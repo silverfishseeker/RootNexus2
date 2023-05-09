@@ -13,6 +13,6 @@ public class MusicAction : AbstractMusicAction {
     public float reverbZoneMix; //reverbZoneMix
     
     protected override void MusicRun(){
-        GameStateEngine.gse.radio.AddTrack(clip,loop,volume,stereoPan,reverbZoneMix,transTime);
+        GameStateEngine.gse.radio.AddOrChangeTrack(clip,loop,volume,stereoPan,reverbZoneMix,transTime);
     }
 }

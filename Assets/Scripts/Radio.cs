@@ -32,7 +32,7 @@ public class Radio : MonoBehaviour {
         SimpleDelete(clip);
     }
 
-    public void AddTrack(AudioClip clip, bool loop, float volume,
+    public void AddOrChangeTrack(AudioClip clip, bool loop, float volume,
             float stereoPan, float reverbZoneMix, float transTime){
 
         bool isAlready = onPlay.ContainsKey(clip);
@@ -87,5 +87,5 @@ public class Radio : MonoBehaviour {
             }
         }
     }
-    
+
 }
