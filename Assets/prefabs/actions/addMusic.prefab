@@ -47,3 +47,8 @@ MonoBehaviour:
   next: {fileID: 0}
   isFinished: 0
   clip: {fileID: 0}
+  loop: 0
+  volume: 1
+  stereoPan: 0
+  reverbZoneMix: 1
+  transTime: 0
