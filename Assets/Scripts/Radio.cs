@@ -15,6 +15,23 @@ public class Radio : MonoBehaviour {
     
     private Dictionary<AudioClip, PlayingAudio> onPlay = new Dictionary<AudioClip, PlayingAudio>();
 
+    private void PrepareTransicion(AudioClip clip, float volume, float transTime){
+        onPlay[clip].isInTransition = true;
+        onPlay[clip].goalVolumen = volume;
+        onPlay[clip].secodnsLeft = transTime;
+        onPlay[clip].pendiente = transTime == 0 ? 0 : (volume - onPlay[clip].asrc.volume) / transTime;
+    }
+
+    private void SimpleDelete(AudioClip clip){
+        Destroy(onPlay[clip].asrc);
+        onPlay.Remove(clip);
+    }
+    
+    private IEnumerator WaitForClipCond(AudioClip clip, System.Func<bool> WaitFunction) {
+        yield return new WaitUntil(WaitFunction);
+        SimpleDelete(clip);
+    }
+
     public void AddTrack(AudioClip clip, bool loop, float volume,
             float stereoPan, float reverbZoneMix, float transTime){
 
@@ -31,49 +48,29 @@ public class Radio : MonoBehaviour {
             asrc.Play();
             onPlay[clip] = new PlayingAudio();
             onPlay[clip].asrc = asrc;
-            onPlay[clip].coroutine = StartCoroutine(WaitForClipToFinish(asrc));
+            onPlay[clip].coroutine = StartCoroutine(WaitForClipCond(clip,
+                () => !asrc.isPlaying && !asrc.loop
+            ));
         }
 
-        if (!isAlready || asrc.volume != volume){
-            onPlay[clip].isInTransition = true;
-            onPlay[clip].goalVolumen = volume;
-            onPlay[clip].secodnsLeft = transTime;
-            onPlay[clip].pendiente = transTime == 0 ? 0 : (volume - asrc.volume) / transTime;
-        }
-    }
-
-    private void SimpleDelete(AudioClip clip){
-        Destroy(onPlay[clip].asrc);
-        onPlay.Remove(clip);
+        if (!isAlready || asrc.volume != volume)
+            PrepareTransicion(clip, volume, transTime);
     }
 
     public bool RemoveTrack(AudioClip clip, float transTime){
         if (!onPlay.ContainsKey(clip))
             return false;
 
+        StopCoroutine(onPlay[clip].coroutine);
         if (transTime == 0){
-            StopCoroutine(onPlay[clip].coroutine);
             SimpleDelete(clip);
         } else{
-            StopCoroutine(onPlay[clip].coroutine);
-            onPlay[clip].coroutine = StartCoroutine(WaitForClipToVolumen0(onPlay[clip].asrc));
-            onPlay[clip].isInTransition = true;
-            onPlay[clip].goalVolumen = 0;
-            onPlay[clip].secodnsLeft = transTime;
-            onPlay[clip].pendiente = transTime == 0 ? 0 : (0 - onPlay[clip].asrc.volume) / transTime;
+            onPlay[clip].coroutine = StartCoroutine(WaitForClipCond(clip,
+                () => onPlay[clip].asrc.volume == 0
+            ));
+            PrepareTransicion(clip, 0, transTime);
         }
         return true;
-    }
-
-    // Esto quita el sonido una vez acaba (loop = false)
-    private IEnumerator WaitForClipToFinish(AudioSource asrc) {
-        yield return new WaitUntil(() => !asrc.isPlaying && !asrc.loop);
-        SimpleDelete(asrc.clip);
-    }
-
-    private IEnumerator WaitForClipToVolumen0(AudioSource asrc) {
-        yield return new WaitUntil(() => asrc.volume == 0);
-        SimpleDelete(asrc.clip);
     }
 
     void Update(){
@@ -90,4 +87,5 @@ public class Radio : MonoBehaviour {
             }
         }
     }
+    
 }
