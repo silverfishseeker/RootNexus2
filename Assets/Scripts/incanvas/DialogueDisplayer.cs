@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -65,7 +64,7 @@ public class DialogueDisplayer : MonoBehaviour {
 
     public void ShowOptions(string text, List<string> textos, List<IBaseAction> acciones, List<AbstractConditionAction> condiciones, INotificableDialogue notificate){
         if (acciones.Count != acciones.Count)
-            throw new ArgumentException("textos y acciones deben de tener la misma longitud");
+            Debug.LogError("textos y acciones deben de tener la misma longitud");
         Show(text, notificate);
         isOptions = true;
         int incrementoDesplazamiento = 0;

@@ -444,6 +444,50 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &1885109844
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1885109846}
+  - component: {fileID: 1885109845}
+  m_Layer: 0
+  m_Name: PersonajesCache
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1885109846
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1885109844}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -17.593555, y: 4.006489, z: 0.7674942}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1180539255457676642}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1885109845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1885109844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 461f166439082b347be35e517009a797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1180539254582840729
 GameObject:
   m_ObjectHideFlags: 0
@@ -683,12 +727,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fuerzaAndar: 300
-  fuerzaCarrera: 450
+  fuerzaCarrera: 428.31
   coeficienteEscalar: 1
   fuerzaSalto: 100
   fuerzaSaltoImpulsoLateral: 60
-  coeficienteSaltoPared: 1
-  coeficienteSaltoImpulsoLateralPared: 4
+  coeficienteSaltoPared: 0.5
+  coeficienteSaltoImpulsoLateralPared: 2
   rozamientoSuelo: 0.6
   rozamientoAire: 0.01
   costeAndarFps: 1
@@ -707,10 +751,20 @@ MonoBehaviour:
   animationYSpeedCoef: 2
   animationTresholdBaseExp: 1.5
   animationTresholdCoef: 0.5
+<<<<<<< HEAD
   fakeJumpBuffer: 1
   jumpBufferMax: 3
   jumpBufferCoef: 1.002
   redSpeedCoef: 0.9
+=======
+  jumpBufferMax: 3
+  jumpBufferCoef: 1.002
+  fakeJumpBuffer: 1
+  redSpeedCoef: 0.9
+  isRalentizacionCaida: 1
+  coeficienteRalentizacionCaida: 4
+  persistenciaRalentizacionCaida: 0.5
+>>>>>>> Miguel
 --- !u!50 &1180539254670517774
 Rigidbody2D:
   serializedVersion: 4
@@ -1252,6 +1306,7 @@ Transform:
   - {fileID: 1180539254670517771}
   - {fileID: 1180539255336053727}
   - {fileID: 1180539256712193129}
+  - {fileID: 1885109846}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1275,6 +1330,7 @@ MonoBehaviour:
   inventario: {fileID: 1180539256608432912}
   oi: {fileID: 1180539256162932260}
   avatar: {fileID: 1180539254670517770}
+  pc: {fileID: 1885109845}
 --- !u!1 &1180539255650575396
 GameObject:
   m_ObjectHideFlags: 0

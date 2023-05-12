@@ -47,7 +47,7 @@ public class HealthBarController : MonoBehaviour {
     void Update() {
         //regeneration
         if (GameStateEngine.isntPaused)
-            Add(regeneration);
+            AddDelta(regeneration/coeficiente);
 
         if(cansado && curr == max){
             cansado = false;
