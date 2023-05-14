@@ -4,17 +4,5 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes:
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
-  - enabled: 1
-    path: Assets/Scenes/Fase1.1.unity
-    guid: 234a5aab40e473449a482ea0afbe0c0a
-  - enabled: 1
-    path: Assets/Scenes/deprecated/La Cueva del Argentino.unity
-    guid: 1a36ba609a2ce5243afa903d1b6246e5
+  m_Scenes: []
   m_configObjects: {}
