@@ -8,7 +8,7 @@ public class Triggered : Activable {
     private bool hasCollided;
     private ActionSetter exitEvent;
     
-    new void Start() {
+    void Start() {
         exitEvent = gameObject.AddComponent<ActionSetter>();
         exitEvent.first = onExitAction;
     }

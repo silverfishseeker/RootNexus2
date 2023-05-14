@@ -10,8 +10,7 @@ public class Clickable : Activable {
     private SpriteRenderer rsp;
     private bool isNear => distancia > Vector2.Distance(gameObject.transform.position, GameStateEngine.gse.avatar.transform.position);
 
-    new protected void Start() {
-        base.Start();
+    protected void Start() {
         rsp = resaltado.GetComponent<SpriteRenderer>();
         resaltado.SetActive(false);
     }

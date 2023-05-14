@@ -8,10 +8,6 @@ public class ActionSetter : MonoBehaviour {
     
     private IBaseAction current;
 
-    public void Start(){
-        current = null;
-    }
-
     public void Run(){
         GameStateEngine.Pause();
         if (first == null){

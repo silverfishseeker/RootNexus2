@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntradaDeNivel : MonoBehaviour {
+public class EntradaDeNivel : ActionSetter {
     public int id;
     public bool facingLeft;
 
