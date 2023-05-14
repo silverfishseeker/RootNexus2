@@ -71,7 +71,9 @@ public class GameStateEngine : MonoBehaviour {
         GeneralResume();
     }
 
-    // NON STATIC  
+    // NON STATIC
+    public IBaseAction accionPrimera;
+    private ActionSetter actionSetter;
     public GameObject gameOverImage;
     public HealthBarController hbc;
     public BigHealthBar bhb;
@@ -95,21 +97,29 @@ public class GameStateEngine : MonoBehaviour {
 
         SceneManager.sceneLoaded += OnSceneLoaded;
         oi.PreStart();
-        gse.gameOverImage.SetActive(false);
+        gameOverImage.SetActive(false);
         CerrarInventario();
         Resume();
+
+        if (accionPrimera != null){
+            actionSetter = gameObject.AddComponent<ActionSetter>();
+            actionSetter.first = accionPrimera;
+            actionSetter.Run();
+        }
+        
     }
     
     void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        gse.pc.LoadToScene();
+        pc.LoadToScene();
 
         if(idEntrada == 0)
-            gse.avatar.transform.position = new Vector2(0,0);
+            avatar.transform.position = new Vector2(0,0);
         else {
             foreach (EntradaDeNivel edn in FindObjectsOfType<EntradaDeNivel>()){
                 if(edn.id == idEntrada){
-                    gse.avatar.transform.position = edn.GetComponent<Transform>().position; 
-                    gse.avatar.GetComponent<SpriteRenderer>().flipX = edn.facingLeft;
+                    avatar.transform.position = edn.GetComponent<Transform>().position; 
+                    avatar.GetComponent<SpriteRenderer>().flipX = edn.facingLeft;
+                    edn.Run();
                     return;
                 }
             }

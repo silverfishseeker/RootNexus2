@@ -5,8 +5,10 @@ using UnityEngine;
 public class ActionSetter : MonoBehaviour {
 
     public IBaseAction first;
-    
     private IBaseAction current;
+
+    private bool pStarted;
+    public bool started => pStarted;
 
     public void Run(){
         GameStateEngine.Pause();
@@ -15,6 +17,7 @@ public class ActionSetter : MonoBehaviour {
             return;
         }
         current = first;
+        pStarted = true;
         current.Run();
     }
 
