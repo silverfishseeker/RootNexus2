@@ -10,7 +10,7 @@ public class ActionSetter : MonoBehaviour {
     private bool pStarted;
     public bool started => pStarted;
 
-    public void Run(){
+    public virtual void Run(){
         GameStateEngine.Pause();
         if (first == null){
             Debug.LogError("La primera acción no puede ser nula");

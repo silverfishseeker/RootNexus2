@@ -10,4 +10,10 @@ public class EntradaDeNivel : ActionSetter {
         if(id == 0)
             Debug.LogError("Una entrada de nivel no puede tener un id 0");
     }
+    public override void Run(){
+        if (first == null)
+            return;
+        base.Run();
+    }
+
 }
