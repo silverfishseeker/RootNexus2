@@ -11,9 +11,11 @@ public class Radio : MonoBehaviour {
         public float goalVolumen;
         public float secodnsLeft;
         public float pendiente;
+        public int emisora;
     }
     
     private Dictionary<AudioClip, PlayingAudio> onPlay = new Dictionary<AudioClip, PlayingAudio>();
+    private Dictionary<int, AudioClip> emisoras = new Dictionary<int, AudioClip>();
 
     private void PrepareTransicion(AudioClip clip, float volume, float transTime){
         onPlay[clip].isInTransition = true;
@@ -32,7 +34,7 @@ public class Radio : MonoBehaviour {
         SimpleDelete(clip);
     }
 
-    public void AddOrChangeTrack(AudioClip clip, bool loop, float volume,
+    public void AddOrChangeTrack(AudioClip clip, int emisora, bool loop, float volume,
             float stereoPan, float reverbZoneMix, float transTime){
 
         bool isAlready = onPlay.ContainsKey(clip);
@@ -53,6 +55,15 @@ public class Radio : MonoBehaviour {
             ));
         }
 
+        // Cada emisora sólo puede reproducir un clip,
+        // si entra otro clip quita al otro con transición cruzada
+        onPlay[clip].emisora = emisora;
+        if(emisora != 0){
+            if (emisoras.ContainsKey(emisora) && !emisoras[emisora].Equals(clip))
+                RemoveTrack(emisoras[emisora], transTime);
+            emisoras[emisora] = clip;
+        }
+
         if (!isAlready || asrc.volume != volume)
             PrepareTransicion(clip, volume, transTime);
     }
@@ -61,6 +72,7 @@ public class Radio : MonoBehaviour {
         if (!onPlay.ContainsKey(clip))
             return false;
 
+        emisoras.Remove(onPlay[clip].emisora);
         StopCoroutine(onPlay[clip].coroutine);
         if (transTime == 0){
             SimpleDelete(clip);
@@ -71,6 +83,31 @@ public class Radio : MonoBehaviour {
             PrepareTransicion(clip, 0, transTime);
         }
         return true;
+    }
+
+    public void RemoveEmisora(int emisora, float transTime){
+        if(emisora != 0){
+            if(emisoras.ContainsKey(emisora))
+                RemoveTrack(emisoras[emisora], transTime);
+        }else{
+            List<AudioClip> aQuitar = new List<AudioClip>();
+            foreach(KeyValuePair<AudioClip, PlayingAudio> kvp in onPlay)
+                if(kvp.Value.emisora == 0)
+                    aQuitar.Add(kvp.Key);
+            foreach(AudioClip ac in aQuitar)
+                RemoveTrack(ac, transTime);
+        }
+    }
+
+    public void ChangeEmisora(int emisora, float volume,
+            float stereoPan, float reverbZoneMix, float transTime){
+        if(emisora != 0){
+            if(emisoras.ContainsKey(emisora))
+                AddOrChangeTrack(emisoras[emisora], emisora, onPlay[emisoras[emisora]].asrc.loop, volume, stereoPan, reverbZoneMix, transTime);
+        }else
+            foreach(KeyValuePair<AudioClip, PlayingAudio> kvp in onPlay)
+                if(kvp.Value.emisora == 0)
+                    AddOrChangeTrack(kvp.Key, emisora, kvp.Value.asrc.loop, volume, stereoPan, reverbZoneMix, transTime);
     }
 
     void Update(){
