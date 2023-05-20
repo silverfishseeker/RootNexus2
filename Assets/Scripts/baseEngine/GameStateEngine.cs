@@ -84,6 +84,7 @@ public class GameStateEngine : MonoBehaviour {
     public GameObject avatar;
     public PersonajesCache pc;
     public Radio radio;
+    public Transform parallaxReferece;
     private int idEntrada = 0;
 
     void OnEnable() {

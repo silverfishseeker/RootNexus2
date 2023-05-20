@@ -21,7 +21,7 @@ public class ActionSetter : MonoBehaviour {
         current.Run();
     }
 
-    protected void Update(){
+    protected void Update(){ // podría ser fixedupdate ??
         // con el bucle while podemos correr todas las acciones posibles en el mismo frame, si son demasiadas se puede cambiar con un if
         while(current != null && current.isFinished) {
             current = current.next;

@@ -1375,6 +1375,7 @@ MonoBehaviour:
   avatar: {fileID: 1180539254670517770}
   pc: {fileID: 1885109845}
   radio: {fileID: 3378126854894096787}
+  parallaxReferece: {fileID: 1180539256712193129}
 --- !u!1 &1180539255650575396
 GameObject:
   m_ObjectHideFlags: 0
